@@ -1,0 +1,50 @@
+# Environment & Secrets
+.env
+*.env
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Corpus Books (Kept local, never committed to git)
+Corpus/
+*.pdf
+
+# Data & Storage
+data/
+/data/
+/data/documents/*
+/data/extracted/*
+/data/indexes/*
+/data/*.db
+/data/*.sqlite
+/data/qdrant_storage/
+
+# Node & Frontend
+node_modules/
+frontend/node_modules/
+frontend/dist/
+dist/
+
+# Model cache & checkpoints
+models/
+.cache/
+huggingface/
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# IDE & OS
+.vscode/
+.idea/
+*.swp
+Thumbs.db
+.DS_Store
+
+# Evaluation reports & logs
+logs/
+*.log
+/evaluation/reports/*.json
+/evaluation/reports/*.csv
