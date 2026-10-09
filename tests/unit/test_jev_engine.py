@@ -45,3 +45,10 @@ def test_jev_joint_evidential_value_redundancy_pruning():
     assert result.pruned_count >= 1
     assert len(result.selected_evidence) == 2
     assert "jev_score" in result.selected_evidence[0]
+
+def test_jev_out_of_domain_interception():
+    decision = jev_engine.evaluate_query_intent("What is astrology?")
+    assert decision.requires_retrieval is False
+    assert decision.search_strategy == SearchStrategy.NONE
+    assert "outside the domain" in decision.direct_response
+

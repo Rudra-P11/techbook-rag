@@ -55,7 +55,27 @@ class JEVDecisionEngine:
                 direct_response="Hello! I am **TechBook RAG**, an intelligent technical knowledge assistant grounded in 11 textbooks across SQL, Deep Learning, Python, and Software Engineering. How can I assist you today?"
             )
 
-        # 2. Pure Code / Exact Identifier Queries (Lexical Preference)
+        # 2. Non-Technical / Out-of-Domain Topic Interception (Astrology, Cooking, Sports, Pop Culture, etc.)
+        non_technical_keywords = {
+            "astrology", "horoscope", "zodiac", "astrological", "tarot", "sun sign", "star sign",
+            "recipe", "baking", "cook", "cooking", "cuisine", "ingredient",
+            "cricket", "football", "basketball", "soccer", "tennis", "olympics", "ipl",
+            "movie", "film", "actor", "actress", "celebrity", "gossip", "pop culture",
+            "fashion", "makeup", "skincare", "horoscopes", "superstition", "mythology"
+        }
+        query_terms = set(re.findall(r'\w+', clean_q))
+        matched_out_of_scope = query_terms.intersection(non_technical_keywords)
+        if matched_out_of_scope:
+            topic = next(iter(matched_out_of_scope))
+            logger.info(f"JEV Pre-Gate intercepted non-technical query (topic: '{topic}'): '{query}'")
+            return JEVQueryDecision(
+                requires_retrieval=False,
+                search_strategy=SearchStrategy.NONE,
+                confidence=0.98,
+                direct_response=f"The query ('{query}') falls outside the domain of computer science, SQL, Python, machine learning, and systems engineering textbooks indexed in TechBook RAG."
+            )
+
+        # 3. Pure Code / Exact Identifier Queries (Lexical Preference)
         code_indicators = ["select ", "from ", "where ", "def ", "class ", "import ", "err ", "exception", "ora-", "syntaxerror"]
         if any(indicator in clean_q for indicator in code_indicators) and len(words) < 8:
             return JEVQueryDecision(
@@ -64,7 +84,7 @@ class JEVDecisionEngine:
                 confidence=0.90
             )
 
-        # 3. Standard Technical Conceptual Queries (Hybrid RRF Search)
+        # 4. Standard Technical Conceptual Queries (Hybrid RRF Search)
         return JEVQueryDecision(
             requires_retrieval=True,
             search_strategy=SearchStrategy.HYBRID,
@@ -127,13 +147,17 @@ class JEVDecisionEngine:
             selected.append(candidate)
             total_jev += jev_candidate_score
 
-
             if len(selected) >= max_chunks:
                 break
 
-        # Check sufficiency: max dense similarity or combined JEV threshold
+        # Calibrated evidence sufficiency decision gate:
+        # Require either exact keyword match (BM25 > 0) OR strong dense semantic similarity (>= 0.52)
         max_dense = max([c.get("dense_score", 0.0) for c in selected], default=0.0)
-        is_sufficient = len(selected) > 0 and (max_dense >= self.relevance_threshold or total_jev >= 0.30)
+        max_lexical = max([c.get("lexical_score", 0.0) for c in selected], default=0.0)
+
+        is_sufficient = len(selected) > 0 and (
+            (max_lexical > 0.0 and max_dense >= 0.38) or (max_dense >= 0.52)
+        )
 
         return JEVContextResult(
             selected_evidence=selected,
@@ -144,3 +168,4 @@ class JEVDecisionEngine:
 
 
 jev_engine = JEVDecisionEngine()
+
