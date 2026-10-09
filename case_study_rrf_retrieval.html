@@ -262,6 +262,208 @@
     .shift-held { background: var(--accent-slate-bg); color: var(--accent-slate); }
     .shift-demoted { background: var(--accent-amber-bg); color: var(--accent-amber); }
 
+    /* Interactive Animation Simulator Area */
+    .simulator-wrapper {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: 10px;
+      padding: 24px;
+      margin: 28px 0;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    }
+
+    .simulator-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .btn-group {
+      display: inline-flex;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
+      padding: 2px;
+    }
+
+    .sim-tab-btn {
+      padding: 6px 14px;
+      background: transparent;
+      border: none;
+      border-radius: 4px;
+      font-family: var(--font-sans);
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .sim-tab-btn.active {
+      background: var(--bg-surface);
+      color: var(--text-main);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+
+    .btn-run-sim {
+      background: var(--accent-clay);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 7px 16px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-run-sim:hover {
+      background: #aa4d35;
+      transform: translateY(-1px);
+    }
+
+    .sim-stage-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      padding: 10px 14px;
+      background: var(--bg-canvas);
+      border-radius: 6px;
+      border-left: 3px solid var(--accent-clay);
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+    }
+
+    /* Animated List Stage */
+    .sim-cards-container {
+      position: relative;
+      height: 520px;
+      margin-top: 10px;
+    }
+
+    .sim-item-card {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 76px;
+      background: var(--bg-canvas);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: transform 0.85s cubic-bezier(0.25, 1, 0.35, 1), box-shadow 0.4s ease, border-color 0.4s ease;
+      will-change: transform;
+    }
+
+    .sim-item-card.highlight {
+      border-color: var(--accent-clay);
+      box-shadow: 0 6px 18px rgba(194, 89, 63, 0.12);
+      background: #ffffff;
+      z-index: 10;
+    }
+
+    .sim-card-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .sim-rank-box {
+      width: 38px;
+      height: 38px;
+      border-radius: 6px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 0.92rem;
+      color: var(--text-main);
+      flex-shrink: 0;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .sim-item-card.highlight .sim-rank-box {
+      background: var(--accent-clay-bg);
+      color: var(--accent-clay);
+      border-color: rgba(194, 89, 63, 0.3);
+    }
+
+    .sim-info-title {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text-main);
+      line-height: 1.3;
+    }
+
+    .sim-info-snippet {
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      margin-top: 3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 440px;
+    }
+
+    .sim-card-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-align: right;
+    }
+
+    .sim-score-chip {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      font-family: var(--font-mono);
+    }
+
+    .sim-score-label {
+      font-size: 0.68rem;
+      color: var(--text-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .sim-score-value {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .sim-formula-tag {
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      color: var(--accent-clay);
+      background: var(--accent-clay-bg);
+      padding: 3px 8px;
+      border-radius: 4px;
+      opacity: 0;
+      transform: scale(0.9);
+      transition: all 0.4s ease;
+      white-space: nowrap;
+    }
+
+    .sim-item-card.show-formula .sim-formula-tag {
+      opacity: 1;
+      transform: scale(1);
+    }
+
     /* Forensic Passage Cards */
     .passage-card {
       background: var(--bg-surface);
@@ -393,7 +595,7 @@
           <span>Verdict: Mathematically Exact & Architecturally Superior</span>
         </div>
         <p style="margin-bottom: 0;">
-          All six RRF calculations match the theoretical formula down to the 5th decimal place. Crucially, the hybrid architecture demonstrates a textbook <strong>BM25 Rescue Event</strong>: Passage #4 (which held the highest BM25 score of <code>32.44</code>) had been buried down at <code>#20</code> in pure dense vector search. Without reciprocal fusion, this key passage would have been discarded from the top-6 context window.
+          All six RRF calculations match the theoretical formula down to the 5th decimal place. Crucially, the hybrid architecture demonstrates a textbook <strong>BM25 Rescue Event</strong>: Passage #4 (which held the highest BM25 score of <code>32.45</code>) had been buried down at <code>#20</code> in pure dense vector search. Without reciprocal fusion, this key passage would have been discarded from the top-6 context window.
         </p>
       </div>
     </section>
@@ -402,7 +604,7 @@
     <section>
       <h2>2. Mathematical Mechanics: Reciprocal Rank Fusion (k = 60)</h2>
       <p>
-        Standard dense vector search generates unbounded cosine similarity scores $\in [0, 1]$, while BM25 Okapi generates unbounded frequency scores $\in [0, \infty)$. Naively combining these with raw weights requires delicate calibration that breaks across diverse queries.
+        Standard dense vector search generates unbounded cosine similarity scores in range [0, 1], while BM25 Okapi generates unbounded frequency scores in range [0, ∞). Naively combining these with raw weights requires delicate calibration that breaks across diverse queries.
       </p>
       <p>
         <strong>Reciprocal Rank Fusion (RRF)</strong> resolves this problem by discarding raw score magnitudes and operating purely over ordinal rankings:
@@ -418,7 +620,7 @@
       </div>
 
       <p>
-        With $k=60$, the highest possible contribution from a single retrieval engine is $\frac{1}{60 + 1} = 0.016393$. When a candidate performs well in <em>both</em> stages, its reciprocal sum compounds, prioritizing it over candidates that only ranked high in a single model.
+        With k = 60, the highest possible contribution from a single retrieval engine is 1 / (60 + 1) = 0.016393. When a candidate performs well in <em>both</em> stages, its reciprocal sum compounds, prioritizing it over candidates that only ranked high in a single model.
       </p>
     </section>
 
@@ -502,9 +704,146 @@
       </div>
     </section>
 
+    <!-- NEW INTERACTIVE ANIMATION SECTION -->
+    <section>
+      <h2>4. Interactive Re-Ranking Animation & Order Dynamics</h2>
+      <p>
+        Watch how the candidates glide past each other in real-time as the reciprocal formula calculates compounding positional weights. Click <strong>"Run Re-Ranking Animation"</strong> to witness Chunk #4 climb from position #20 up into the context window.
+      </p>
+
+      <div class="simulator-wrapper">
+        <div class="simulator-controls">
+          <div class="btn-group">
+            <button class="sim-tab-btn active" id="btn-mode-dense" onclick="setMode('dense')">1. Dense ANN Order</button>
+            <button class="sim-tab-btn" id="btn-mode-bm25" onclick="setMode('bm25')">2. BM25 Lexical Order</button>
+            <button class="sim-tab-btn" id="btn-mode-rrf" onclick="setMode('rrf')">3. Final RRF Order</button>
+          </div>
+
+          <button class="btn-run-sim" id="btn-play-anim" onclick="runFullAnimation()">
+            <span>▶</span> Run Re-Ranking Animation
+          </button>
+        </div>
+
+        <div class="sim-stage-desc" id="sim-status-banner">
+          Viewing initial <strong>Dense ANN Semantic Order</strong>. Notice Chunk #4 is buried at the bottom (Rank #20) despite having exact technical phrasing.
+        </div>
+
+        <div class="sim-cards-container" id="cards-container">
+          <!-- Card 1 -->
+          <div class="sim-item-card" id="card-c1" data-id="c1">
+            <div class="sim-card-left">
+              <div class="sim-rank-box" id="rank-c1">#1</div>
+              <div>
+                <div class="sim-info-title">Figure 6-6: RNN forward pass data flow (pp. 176–177)</div>
+                <div class="sim-info-snippet">"This all covers how the forward pass through an RNN would work..."</div>
+              </div>
+            </div>
+            <div class="sim-card-right">
+              <div class="sim-formula-tag" id="formula-c1">1/(60+1) + 1/(60+2) = 0.03252</div>
+              <div class="sim-score-chip">
+                <span class="sim-score-label" id="label-c1">Dense Cosine</span>
+                <span class="sim-score-value" id="val-c1">0.8186</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="sim-item-card" id="card-c2" data-id="c2">
+            <div class="sim-card-left">
+              <div class="sim-rank-box" id="rank-c2">#4</div>
+              <div>
+                <div class="sim-info-title">Three-dimensional sequence batches (pp. 158–159)</div>
+                <div class="sim-info-snippet">"[batch_size, sequence_length, num_features] - batch of sequences..."</div>
+              </div>
+            </div>
+            <div class="sim-card-right">
+              <div class="sim-formula-tag" id="formula-c2">1/(60+11) + 1/(60+3) = 0.02996</div>
+              <div class="sim-score-chip">
+                <span class="sim-score-label" id="label-c2">Dense Cosine</span>
+                <span class="sim-score-value" id="val-c2">0.7719</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="sim-item-card" id="card-c3" data-id="c3">
+            <div class="sim-card-left">
+              <div class="sim-rank-box" id="rank-c3">#3</div>
+              <div>
+                <div class="sim-info-title">Figure 6-7: Forward vs backward pass mechanics (pp. 178–179)</div>
+                <div class="sim-info-snippet">"In the backward pass, RNNs pass data in opposite direction of forward..."</div>
+              </div>
+            </div>
+            <div class="sim-card-right">
+              <div class="sim-formula-tag" id="formula-c3">1/(60+8) + 1/(60+6) = 0.02986</div>
+              <div class="sim-score-chip">
+                <span class="sim-score-label" id="label-c3">Dense Cosine</span>
+                <span class="sim-score-value" id="val-c3">0.7821</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4 (The Rescued Item) -->
+          <div class="sim-item-card" id="card-c4" data-id="c4">
+            <div class="sim-card-left">
+              <div class="sim-rank-box" id="rank-c4">#6</div>
+              <div>
+                <div class="sim-info-title">Underlying RNN data flow structure (pp. 169–170)</div>
+                <div class="sim-info-snippet">"how recurrent neural networks do this... in the way they pass data forward..."</div>
+              </div>
+            </div>
+            <div class="sim-card-right">
+              <div class="sim-formula-tag" id="formula-c4">1/(60+20) + 1/(60+1) = 0.02889</div>
+              <div class="sim-score-chip">
+                <span class="sim-score-label" id="label-c4">Dense Cosine</span>
+                <span class="sim-score-value" id="val-c4">0.7603</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 5 -->
+          <div class="sim-item-card" id="card-c5" data-id="c5">
+            <div class="sim-card-left">
+              <div class="sim-rank-box" id="rank-c5">#2</div>
+              <div>
+                <div class="sim-info-title">Code: for layer in self.layers: X = layer.forward(X) (pp. 86–87)</div>
+                <div class="sim-info-snippet">"def forward(self, X): for layer in self.layers: X = layer.forward(X)..."</div>
+              </div>
+            </div>
+            <div class="sim-card-right">
+              <div class="sim-formula-tag" id="formula-c5">1/(60+6) + 1/(60+15) = 0.02848</div>
+              <div class="sim-score-chip">
+                <span class="sim-score-label" id="label-c5">Dense Cosine</span>
+                <span class="sim-score-value" id="val-c5">0.7887</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 6 -->
+          <div class="sim-item-card" id="card-c6" data-id="c6">
+            <div class="sim-card-left">
+              <div class="sim-rank-box" id="rank-c6">#5</div>
+              <div>
+                <div class="sim-info-title">Peephole connections & LSTM forward pass (p. 186)</div>
+                <div class="sim-info-snippet">"nodes fit into an RNNLayer in the same way... have the same forward pass..."</div>
+              </div>
+            </div>
+            <div class="sim-card-right">
+              <div class="sim-formula-tag" id="formula-c6">1/(60+19) + 1/(60+4) = 0.02828</div>
+              <div class="sim-score-chip">
+                <span class="sim-score-label" id="label-c6">Dense Cosine</span>
+                <span class="sim-score-value" id="val-c6">0.7626</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
     <!-- Forensic Analysis of Retrieved Passages -->
     <section>
-      <h2>4. Passage Forensic Analysis: What Got In and Why</h2>
+      <h2>5. Passage Forensic Analysis: What Got In and Why</h2>
       
       <!-- Chunk 1 -->
       <div class="passage-card">
@@ -586,7 +925,7 @@ for layer in reversed(self.layers):
 
     <!-- Key Takeaways -->
     <section>
-      <h2>5. Architecture Takeaways for Production Systems</h2>
+      <h2>6. Architecture Takeaways for Production Systems</h2>
       <p>
         This empirical case demonstrates three core principles of production RAG design:
       </p>
@@ -609,5 +948,123 @@ for layer in reversed(self.layers):
     </footer>
 
   </div>
+
+  <script>
+    // Data definition for the 6 candidate chunks
+    const candidates = {
+      c1: { id: 'c1', denseRank: 1,  denseScore: 0.8186,  bm25Rank: 2,  bm25Score: 31.8952, rrfRank: 1, rrfScore: 0.03252, formula: '1/(60+1) + 1/(60+2) = 0.03252' },
+      c2: { id: 'c2', denseRank: 11, denseScore: 0.7719,  bm25Rank: 3,  bm25Score: 31.5943, rrfRank: 2, rrfScore: 0.02996, formula: '1/(60+11) + 1/(60+3) = 0.02996' },
+      c3: { id: 'c3', denseRank: 8,  denseScore: 0.7821,  bm25Rank: 6,  bm25Score: 30.6517, rrfRank: 3, rrfScore: 0.02986, formula: '1/(60+8) + 1/(60+6) = 0.02986' },
+      c4: { id: 'c4', denseRank: 20, denseScore: 0.7603,  bm25Rank: 1,  bm25Score: 32.4496, rrfRank: 4, rrfScore: 0.02889, formula: '1/(60+20) + 1/(60+1) = 0.02889' },
+      c5: { id: 'c5', denseRank: 6,  denseScore: 0.7887,  bm25Rank: 15, bm25Score: 28.5526, rrfRank: 5, rrfScore: 0.02848, formula: '1/(60+6) + 1/(60+15) = 0.02848' },
+      c6: { id: 'c6', denseRank: 19, denseScore: 0.7626,  bm25Rank: 4,  bm25Score: 31.2341, rrfRank: 6, rrfScore: 0.02828, formula: '1/(60+19) + 1/(60+4) = 0.02828' }
+    };
+
+    // Ordinal orderings across the 6 slots (0 to 5)
+    const orderings = {
+      dense: ['c1', 'c5', 'c3', 'c2', 'c6', 'c4'], // sorted by denseRank: 1, 6, 8, 11, 19, 20
+      bm25:  ['c4', 'c1', 'c2', 'c6', 'c3', 'c5'], // sorted by bm25Rank: 1, 2, 3, 4, 6, 15
+      rrf:   ['c1', 'c2', 'c3', 'c4', 'c5', 'c6']  // sorted by rrfRank: 1, 2, 3, 4, 5, 6
+    };
+
+    const SLOT_HEIGHT = 86; // px per slot (76px height + 10px margin)
+
+    function updateCardPositions(mode, showFormula = false) {
+      const order = orderings[mode];
+      
+      order.forEach((cid, slotIndex) => {
+        const card = document.getElementById('card-' + cid);
+        const rankBox = document.getElementById('rank-' + cid);
+        const scoreLabel = document.getElementById('label-' + cid);
+        const scoreVal = document.getElementById('val-' + cid);
+        const data = candidates[cid];
+
+        // Apply physical translateY
+        card.style.transform = `translateY(${slotIndex * SLOT_HEIGHT}px)`;
+
+        if (showFormula) {
+          card.classList.add('show-formula');
+        } else {
+          card.classList.remove('show-formula');
+        }
+
+        if (mode === 'dense') {
+          rankBox.textContent = '#' + data.denseRank;
+          scoreLabel.textContent = 'Dense Cosine';
+          scoreVal.textContent = data.denseScore.toFixed(4);
+          card.classList.remove('highlight');
+        } else if (mode === 'bm25') {
+          rankBox.textContent = '#' + data.bm25Rank;
+          scoreLabel.textContent = 'BM25 Score';
+          scoreVal.textContent = data.bm25Score.toFixed(2);
+          card.classList.remove('highlight');
+        } else if (mode === 'rrf') {
+          rankBox.textContent = '#' + data.rrfRank;
+          scoreLabel.textContent = 'Final RRF';
+          scoreVal.textContent = data.rrfScore.toFixed(5);
+          if (cid === 'c4') {
+            card.classList.add('highlight');
+          } else {
+            card.classList.remove('highlight');
+          }
+        }
+      });
+    }
+
+    function setMode(mode) {
+      document.querySelectorAll('.sim-tab-btn').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = document.getElementById('btn-mode-' + mode);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      const banner = document.getElementById('sim-status-banner');
+
+      if (mode === 'dense') {
+        banner.innerHTML = 'Stage 1: <strong>Dense ANN Semantic Order</strong>. Evaluates pure 384d vector cosine similarity. Notice Chunk #4 is buried at slot 6 (Rank #20 in global corpus).';
+        updateCardPositions('dense', false);
+      } else if (mode === 'bm25') {
+        banner.innerHTML = 'Stage 2: <strong>BM25 Lexical Keyword Order</strong>. Chunk #4 surges to the top (Rank #1, score 32.45) due to high term frequency of <em>"forward pass"</em>.';
+        updateCardPositions('bm25', false);
+      } else if (mode === 'rrf') {
+        banner.innerHTML = 'Stage 3: <strong>Reciprocal Rank Fusion (k=60) Order</strong>. The reciprocal scores combine, promoting Chunk #4 by +16 positions straight into the prompt context.';
+        updateCardPositions('rrf', true);
+      }
+    }
+
+    let animTimer = null;
+    function runFullAnimation() {
+      if (animTimer) clearTimeout(animTimer);
+      const playBtn = document.getElementById('btn-play-anim');
+      playBtn.textContent = 'Animating...';
+      playBtn.disabled = true;
+
+      // Step 1: Start at Dense
+      setMode('dense');
+
+      // Step 2: Show BM25 after 1.8s
+      animTimer = setTimeout(() => {
+        setMode('bm25');
+
+        // Step 3: Flash formulas after 2.0s
+        animTimer = setTimeout(() => {
+          document.getElementById('sim-status-banner').innerHTML = 'Computing Reciprocal Rank Fusion: <code>1/(60 + DenseRank) + 1/(60 + LexicalRank)</code>...';
+          document.querySelectorAll('.sim-item-card').forEach(c => c.classList.add('show-formula'));
+
+          // Step 4: Re-order cards into final RRF after 1.2s
+          animTimer = setTimeout(() => {
+            setMode('rrf');
+            playBtn.innerHTML = '<span>▶</span> Replay Animation';
+            playBtn.disabled = false;
+          }, 1400);
+
+        }, 2000);
+
+      }, 1800);
+    }
+
+    // Initialize layout on load
+    window.addEventListener('DOMContentLoaded', () => {
+      updateCardPositions('dense', false);
+    });
+  </script>
 </body>
 </html>
