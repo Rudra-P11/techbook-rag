@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TechBook RAG — Architecture Blueprint & Interactive End-to-End Pipeline Showcase</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-canvas: #faf9f5;
+      --bg-surface: #ffffff;
+      --bg-subtle: #f4f2ec;
+      --bg-code: #f0eee6;
+      --border-light: #e8e5dc;
+      --border-dark: #d5d1c4;
+      
+      --text-main: #1f1e1d;
+      --text-muted: #6b665f;
+      --text-soft: #8c867e;
+      
+      --accent-clay: #c2593f;
+      --accent-clay-bg: #f9edea;
+      --accent-amber: #b86e1e;
+      --accent-amber-bg: #fdf3e7;
+      --accent-olive: #3d7a46;
+      --accent-olive-bg: #edf6ee;
+      --accent-slate: #4a5c68;
+      --accent-slate-bg: #eef2f5;
+
+      --font-serif: 'Instrument Serif', Georgia, serif;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', Menlo, Consolas, monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      background-color: var(--bg-canvas);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      padding: 48px 24px 100px 24px;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    /* Top Navigation Banner */
+    .top-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 44px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .top-nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      letter-spacing: -0.01em;
+    }
+    .top-nav-tag {
+      background: var(--accent-clay-bg);
+      color: var(--accent-clay);
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+    .top-nav-links {
+      display: flex;
+      gap: 16px;
+      font-size: 0.85rem;
+    }
+    .top-nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .top-nav-links a:hover {
+      color: var(--accent-clay);
+    }
+
+    /* Hero Section */
+    .hero {
+      margin-bottom: 48px;
+    }
+    .badge-label {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--accent-clay);
+      background: var(--accent-clay-bg);
+      padding: 3px 10px;
+      border-radius: 4px;
+      margin-bottom: 16px;
+    }
+    h1 {
+      font-family: var(--font-serif);
+      font-size: 3.2rem;
+      line-height: 1.1;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      color: var(--text-main);
+      margin-bottom: 18px;
+    }
+    .hero-lead {
+      font-size: 1.16rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      max-width: 840px;
+      margin-bottom: 28px;
+    }
+
+    .spec-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      padding: 20px 24px;
+    }
+    .spec-item-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-soft);
+      margin-bottom: 4px;
+    }
+    .spec-item-val {
+      font-family: var(--font-mono);
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    /* Headings & Content */
+    h2 {
+      font-family: var(--font-serif);
+      font-size: 2.1rem;
+      font-weight: 400;
+      color: var(--text-main);
+      margin: 54px 0 18px 0;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+    }
+    .section-num {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--accent-clay);
+      margin-right: 8px;
+    }
+    h3 {
+      font-size: 1.12rem;
+      font-weight: 600;
+      margin: 24px 0 10px 0;
+      color: var(--text-main);
+    }
+    p {
+      font-size: 0.96rem;
+      color: #33312d;
+      margin-bottom: 16px;
+    }
+
+    /* Architectural Q&A Cards */
+    .qa-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      padding: 24px;
+      margin-bottom: 24px;
+      transition: border-color 0.2s;
+    }
+    .qa-card:hover {
+      border-color: var(--border-dark);
+    }
+    .qa-question {
+      font-family: var(--font-serif);
+      font-size: 1.5rem;
+      font-weight: 400;
+      color: var(--accent-clay);
+      margin-bottom: 14px;
+      line-height: 1.3;
+    }
+    .decision-badge {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: var(--bg-subtle);
+      color: var(--text-main);
+      margin-bottom: 12px;
+      border: 1px solid var(--border-light);
+    }
+
+    /* Books Library Grid */
+    .books-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 14px;
+      margin: 20px 0;
+    }
+    .book-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .book-title {
+      font-weight: 600;
+      font-size: 0.88rem;
+      line-height: 1.35;
+      color: var(--text-main);
+    }
+    .book-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+    }
+    .subject-pill {
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: var(--accent-clay-bg);
+      color: var(--accent-clay);
+    }
+
+    /* Simulation Showcase Area */
+    .simulation-panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: 10px;
+      padding: 28px;
+      margin: 28px 0;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+    }
+    .sim-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 16px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border-light);
+      margin-bottom: 24px;
+    }
+    .sim-query-input-box {
+      flex: 1;
+      min-width: 280px;
+    }
+    .sim-query-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-soft);
+      margin-bottom: 6px;
+    }
+    .sim-query-display {
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--accent-clay);
+      background: var(--bg-code);
+      padding: 10px 14px;
+      border-radius: 6px;
+      border: 1px solid var(--border-light);
+    }
+    .btn-run-all {
+      background: var(--accent-clay);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 10px 20px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+    .btn-run-all:hover {
+      background: #aa4d35;
+      transform: translateY(-1px);
+    }
+    .btn-run-all:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Pipeline Step Tracker */
+    .pipeline-stepper {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 6px;
+      margin-bottom: 24px;
+    }
+    .step-pill {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
+      padding: 8px 6px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .step-pill.active {
+      background: var(--accent-clay-bg);
+      border-color: var(--accent-clay);
+    }
+    .step-pill.completed {
+      background: var(--accent-olive-bg);
+      border-color: var(--accent-olive);
+    }
+    .step-num {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--text-soft);
+      display: block;
+    }
+    .step-pill.active .step-num { color: var(--accent-clay); }
+    .step-pill.completed .step-num { color: var(--accent-olive); }
+    .step-name {
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      line-height: 1.2;
+      margin-top: 2px;
+      display: block;
+    }
+
+    /* Live Output Monitor Box */
+    .live-monitor-box {
+      background: var(--bg-code);
+      border: 1px solid var(--border-dark);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+    .monitor-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px dashed var(--border-dark);
+    }
+    .stage-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .stage-latency-badge {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: #ffffff;
+      border: 1px solid var(--border-dark);
+      color: var(--accent-clay);
+    }
+    .stage-body {
+      font-size: 0.88rem;
+      line-height: 1.6;
+      color: var(--text-main);
+    }
+    .stage-code-snippet {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      background: #ffffff;
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
+      padding: 12px;
+      margin-top: 10px;
+      white-space: pre-wrap;
+      color: #2b2825;
+    }
+
+    /* Final Output Bubble */
+    .final-answer-preview {
+      background: #ffffff;
+      border: 1px solid var(--border-light);
+      border-left: 4px solid var(--accent-olive);
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 20px;
+    }
+    .final-answer-header {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent-olive);
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* Table Styles */
+    .table-container {
+      margin: 20px 0;
+      background: #ffffff;
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+    th {
+      background: var(--bg-subtle);
+      padding: 10px 14px;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border-dark);
+      text-align: left;
+    }
+    td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border-light);
+      color: var(--text-main);
+    }
+    tr:last-child td { border-bottom: none; }
+
+    /* Footer */
+    .footer {
+      margin-top: 80px;
+      padding-top: 28px;
+      border-top: 1px solid var(--border-light);
+      font-size: 0.82rem;
+      color: var(--text-soft);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: gap;
+    }
+    .footer a {
+      color: var(--accent-clay);
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    
+    <!-- Top Navigation -->
+    <nav class="top-nav">
+      <div class="top-nav-brand">
+        <span>TechBook RAG</span>
+        <span class="top-nav-tag">Architecture & Blueprint</span>
+      </div>
+      <div class="top-nav-links">
+        <a href="#architecture">Architecture Decisions</a>
+        <a href="#corpus">Corpus Library</a>
+        <a href="#simulation">Backend Simulator</a>
+        <a href="case_study_rrf_retrieval.html">Case Study Document ↗</a>
+        <a href="https://github.com/Rudra-P11/techbook-rag" target="_blank">GitHub Repo ↗</a>
+      </div>
+    </nav>
+
+    <!-- Hero Header -->
+    <header class="hero">
+      <div class="badge-label">System Architecture & Technical Specifications</div>
+      <h1>Intelligent Knowledge Assistant for Technical Books</h1>
+      <p class="hero-lead">
+        A grounded, sub-80ms hybrid retrieval engine built over 11 dense computer science volumes (2,810 chunks) combining dense vector embeddings, BM25 Okapi lexical scoring, Reciprocal Rank Fusion, and strict citation verification.
+      </p>
+
+      <div class="spec-grid">
+        <div>
+          <div class="spec-item-label">Embedding Model</div>
+          <div class="spec-item-val">BAAI/bge-small-en-v1.5 (384d)</div>
+        </div>
+        <div>
+          <div class="spec-item-label">Vector Storage</div>
+          <div class="spec-item-val">Qdrant ANN (HNSW Cosine)</div>
+        </div>
+        <div>
+          <div class="spec-item-label">Lexical Search</div>
+          <div class="spec-item-val">BM25 Okapi (2,810 chunks)</div>
+        </div>
+        <div>
+          <div class="spec-item-label">Re-Ranking Engine</div>
+          <div class="spec-item-val">Reciprocal Rank Fusion (k=60)</div>
+        </div>
+        <div>
+          <div class="spec-item-label">Warm Retrieval SLA</div>
+          <div class="spec-item-val" style="color: var(--accent-olive);">< 80 ms (Tested ~68 ms)</div>
+        </div>
+        <div>
+          <div class="spec-item-label">Total End-to-End SLA</div>
+          <div class="spec-item-val">1.2 – 2.8 s (OpenAI gpt-4o-mini)</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- SECTION 1: ARCHITECTURAL DECISIONS -->
+    <section id="architecture">
+      <h2><span class="section-num">01</span> Why These Architectural Choices?</h2>
+      <p>
+        Building production RAG over dense technical literature requires deliberate trade-offs across chunking granularity, vector dimensions, memory footprint, and retrieval fusion.
+      </p>
+
+      <!-- Question 1 -->
+      <div class="qa-card">
+        <div class="decision-badge">Decision 1 • Vectorization & Embeddings</div>
+        <div class="qa-question">Why did we choose BAAI/bge-small-en-v1.5 instead of larger alternatives?</div>
+        <p>
+          We chose <strong>BAAI/bge-small-en-v1.5</strong> to satisfy our 2–5s SLA on commodity hardware without requiring expensive NVIDIA CUDA GPUs or burning paid API tokens per search query:
+        </p>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Model</th>
+                <th>Parameters</th>
+                <th>Dimensions</th>
+                <th>CPU Inference</th>
+                <th>RAM / Storage Footprint</th>
+                <th>Fit for This Project</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="background: #faf8f3;">
+                <td><strong>BAAI/bge-small-en-v1.5</strong></td>
+                <td><strong>33.3M</strong></td>
+                <td><strong>384</strong></td>
+                <td><strong>15 – 25 ms</strong></td>
+                <td><strong>~150 MB RAM</strong> (1.5 KB / vector)</td>
+                <td><strong style="color: var(--accent-olive);">Optimal (Chosen)</strong></td>
+              </tr>
+              <tr>
+                <td>BAAI/bge-large-en-v1.5</td>
+                <td>335M</td>
+                <td>1,024</td>
+                <td>180 – 350 ms</td>
+                <td>~1.4 GB RAM (4.1 KB / vector)</td>
+                <td>Too slow on CPU</td>
+              </tr>
+              <tr>
+                <td>OpenAI text-embedding-3-small</td>
+                <td>API hosted</td>
+                <td>1,536</td>
+                <td>120 – 250 ms (Network)</td>
+                <td>Paid API cost per query</td>
+                <td>Violates offline OSS rule</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0;">
+          <strong>Vector Storage Economics:</strong> 384 dimensions require 4x less memory in Qdrant HNSW graphs than 1536-dimensional OpenAI embeddings, allowing the entire 2,810-chunk index to execute inside sub-millisecond RAM caches.
+        </p>
+      </div>
+
+      <!-- Question 2 -->
+      <div class="qa-card">
+        <div class="decision-badge">Decision 2 • Chunking Architecture</div>
+        <div class="qa-question">Why 700 tokens with 15% overlap?</div>
+        <p>
+          Chunking technical books requires solving the <strong>Context Truncation Dilemma</strong>:
+        </p>
+        <ul style="padding-left: 20px; font-size: 0.92rem; margin-bottom: 14px; color: #33312d;">
+          <li style="margin-bottom: 6px;"><strong>If chunks are too small (200–300 tokens):</strong> Multi-line SQL CTE queries, recursive Python functions, and mathematical proofs are cut in half, destroying syntactic integrity.</li>
+          <li style="margin-bottom: 6px;"><strong>If chunks are too large (1,500+ tokens):</strong> Embeddings suffer from semantic dilution, making specific concepts harder to isolate in ANN vector space.</li>
+          <li><strong>The 700-token sweet spot:</strong> Perfectly captures 2 to 3 cohesive textbook paragraphs or a complete code block alongside its explanatory commentary.</li>
+        </ul>
+        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0;">
+          <strong>15% Overlap (105 tokens):</strong> Implemented via token-aware sentence boundary snapping. If an essential algorithmic definition lands across a chunk break, it is guaranteed to appear in full in both adjacent chunks.
+        </p>
+      </div>
+
+      <!-- Question 3 -->
+      <div class="qa-card">
+        <div class="decision-badge">Decision 3 • Hybrid Search & RRF Fusion</div>
+        <div class="qa-question">Why Reciprocal Rank Fusion (k=60) instead of Weighted Sum?</div>
+        <p>
+          Dense embeddings produce cosine similarity scores bounded in $[0, 1]$, whereas BM25 Okapi produces unbounded frequency scores in $[0, \infty)$. Linear weighted sum ($\alpha \cdot \text{Dense} + (1-\alpha) \cdot \text{BM25}$) fails because score scales shift wildly between short and long queries.
+        </p>
+        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0;">
+          <strong>RRF eliminates score normalization vulnerabilities:</strong> It operates strictly over ordinal positions: $\text{RRF}(d) = \sum \frac{1}{60 + \text{Rank}_m(d)}$. As proven in our empirical case study, this allows BM25 to rescue exact terminology matches (like Chunk #4, promoted +16 ranks into the context window) while preventing single-keyword spam from overwhelming semantic relevance.
+        </p>
+      </div>
+    </section>
+
+    <!-- SECTION 2: CORPUS LIBRARY -->
+    <section id="corpus">
+      <h2><span class="section-num">02</span> The 11 Technical Books Corpus</h2>
+      <p>
+        Our ingestion pipeline processed, cleaned, and indexed 11 authoritative technical textbooks into 2,810 searchable passages across SQL, Python, Systems, and Machine Learning:
+      </p>
+
+      <div class="books-grid">
+        <div class="book-card">
+          <div class="book-title">Deep Learning from Scratch</div>
+          <div class="book-meta">
+            <span class="subject-pill">Deep Learning</span>
+            <span>268 pages • 205 chunks</span>
+          </div>
+        </div>
+        <div class="book-card">
+          <div class="book-title">Packt SQL Query Design Patterns and Best Practices</div>
+          <div class="book-meta">
+            <span class="subject-pill">SQL & Databases</span>
+            <span>270 pages • 169 chunks</span>
+          </div>
+        </div>
+        <div class="book-card">
+          <div class="book-title">Boost Asio C++ Network Programming Cookbook</div>
+          <div class="book-meta">
+            <span class="subject-pill">Systems & C++</span>
+            <span>248 pages • 200 chunks</span>
+          </div>
+        </div>
+        <div class="book-card">
+          <div class="book-title">Financial Theory with Python: A Gentle Introduction</div>
+          <div class="book-meta">
+            <span class="subject-pill">Python</span>
+            <span>204 pages • 145 chunks</span>
+          </div>
+        </div>
+        <div class="book-card">
+          <div class="book-title">Hands-On Machine Learning with C++</div>
+          <div class="book-meta">
+            <span class="subject-pill">Systems & ML</span>
+            <span>Packt Publishing</span>
+          </div>
+        </div>
+        <div class="book-card">
+          <div class="book-title">Linear Algebra for Data Science</div>
+          <div class="book-meta">
+            <span class="subject-pill">Mathematics</span>
+            <span>Vector Calculus</span>
+          </div>
+        </div>
+        <div class="book-card">
+          <div class="book-title">AI as a Service: Serverless Machine Learning on AWS</div>
+          <div class="book-meta">
+            <span class="subject-pill">Cloud & Architecture</span>
+            <span>Manning</span>
+          </div>
+        </div>
+        <div class="book-card">
+          <div class="book-title">CRC Data Science: A First Introduction with Python</div>
+          <div class="book-meta">
+            <span class="subject-pill">Data Science</span>
+            <span>CRC Press</span>
+          </div>
+        </div>
+        <div class="book-card">
+          <div class="book-title">Cryptography and Embedded Systems Security</div>
+          <div class="book-meta">
+            <span class="subject-pill">Security</span>
+            <span>Springer</span>
+          </div>
+        </div>
+        <div class="book-card">
+          <div class="book-title">Graph-Powered Analytics and Machine Learning</div>
+          <div class="book-meta">
+            <span class="subject-pill">Graph Databases</span>
+            <span>TigerGraph</span>
+          </div>
+        </div>
+        <div class="book-card">
+          <div class="book-title">Python in Finance: Practical Numerical Algorithms</div>
+          <div class="book-meta">
+            <span class="subject-pill">Python & Finance</span>
+            <span>O'Reilly</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: INTERACTIVE BACKEND SIMULATION -->
+    <section id="simulation">
+      <h2><span class="section-num">03</span> Interactive Backend Pipeline Simulation</h2>
+      <p>
+        Experience what happens step-by-step when a query enters the FastAPI server. Click <strong>"Run End-to-End Simulation"</strong> to trace the exact execution path across all 8 micro-stages with live latency meters.
+      </p>
+
+      <div class="simulation-panel">
+        <div class="sim-header">
+          <div class="sim-query-input-box">
+            <div class="sim-query-label">Active User Query (Case Study Example)</div>
+            <div class="sim-query-display">"What is a forward pass in a neural network?"</div>
+          </div>
+          <button class="btn-run-all" id="btn-run-simulation" onclick="startFullSimulation()">
+            <span>▶</span> Run End-to-End Simulation
+          </button>
+        </div>
+
+        <!-- 8-Stage Step Indicator -->
+        <div class="pipeline-stepper" id="stepper">
+          <div class="step-pill" id="step-1" onclick="showStage(1)">
+            <span class="step-num">01</span>
+            <span class="step-name">Guardrail</span>
+          </div>
+          <div class="step-pill" id="step-2" onclick="showStage(2)">
+            <span class="step-num">02</span>
+            <span class="step-name">BGE Embed</span>
+          </div>
+          <div class="step-pill" id="step-3" onclick="showStage(3)">
+            <span class="step-num">03</span>
+            <span class="step-name">Hybrid ANN</span>
+          </div>
+          <div class="step-pill" id="step-4" onclick="showStage(4)">
+            <span class="step-num">04</span>
+            <span class="step-name">RRF Re-Rank</span>
+          </div>
+          <div class="step-pill" id="step-5" onclick="showStage(5)">
+            <span class="step-num">05</span>
+            <span class="step-name">Relevance</span>
+          </div>
+          <div class="step-pill" id="step-6" onclick="showStage(6)">
+            <span class="step-num">06</span>
+            <span class="step-name">Context Pack</span>
+          </div>
+          <div class="step-pill" id="step-7" onclick="showStage(7)">
+            <span class="step-num">07</span>
+            <span class="step-name">LLM Gen</span>
+          </div>
+          <div class="step-pill" id="step-8" onclick="showStage(8)">
+            <span class="step-num">08</span>
+            <span class="step-name">Citation Verify</span>
+          </div>
+        </div>
+
+        <!-- Live Stage Details Box -->
+        <div class="live-monitor-box">
+          <div class="monitor-title-row">
+            <div class="stage-title" id="stage-title">Stage 1: Input Sanitization & Domain Guardrail Defense</div>
+            <div class="stage-latency-badge" id="stage-latency">Latency: 14 ms</div>
+          </div>
+          <div class="stage-body" id="stage-description">
+            Validates user query against prompt injection patterns and domain boundaries. Non-technical queries (e.g. medical advice like headaches) are intercepted and rejected immediately in under 15ms without invoking OpenAI.
+          </div>
+          <div class="stage-code-snippet" id="stage-code">
+is_allowed, category, msg = domain_guardrail.check_query_safety(query)
+# Status: ALLOWED (Category: Technical / Deep Learning)
+# Sanitized Query: "What is a forward pass in a neural network?"
+          </div>
+        </div>
+
+        <!-- Final Answer Preview (reveals on completion) -->
+        <div class="final-answer-preview" id="final-answer-preview" style="display: none;">
+          <div class="final-answer-header">
+            <span>Synthesized & Verified Response (Grounded in Deep Learning from Scratch)</span>
+            <span style="font-family: var(--font-mono); color: var(--accent-clay);">Total End-to-End: 1,513 ms</span>
+          </div>
+          <p style="font-size: 0.93rem; margin-bottom: 12px;">
+            In a neural network, a <strong>forward pass</strong> is the initial computational phase where input data flows sequentially through the network's layers to compute activations and produce predictions [Deep Learning from Scratch, pp. 176-177].
+          </p>
+          <div style="background: var(--bg-canvas); border: 1px solid var(--border-light); border-radius: 6px; padding: 12px; font-family: var(--font-mono); font-size: 0.82rem; margin-bottom: 12px;">
+for layer in self.layers:
+    X = layer.forward(X)
+return X
+          </div>
+          <p style="font-size: 0.93rem; margin-bottom: 0;">
+            During this pass, each layer computes affine transformations followed by nonlinear activations. This is explicitly contrasted with the <strong>backward pass</strong>, where loss gradients are propagated in the reverse direction using the chain rule [Deep Learning from Scratch, pp. 86-87, 178-179].
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div>TechBook RAG • Intelligent Technical Assistant</div>
+      <div>
+        <a href="case_study_rrf_retrieval.html">Open Full Empirical Case Study Document ↗</a>
+      </div>
+    </footer>
+
+  </div>
+
+  <script>
+    // Detailed simulation telemetry definitions
+    const stages = [
+      {
+        num: 1,
+        title: "Stage 1: Input Sanitization & Domain Guardrail Defense",
+        latency: "14 ms",
+        desc: "Validates query safety against prompt injections and checks domain scope. Intercepts medical/dangerous queries in 14ms without calling OpenAI.",
+        code: `is_allowed, cat, msg = domain_guardrail.check_query_safety(query)\n# Result: ALLOWED (Scope: Deep Learning & Neural Architectures)\nsanitized_query, flagged = injection_guardrail.sanitize_query(query)`
+      },
+      {
+        num: 2,
+        title: "Stage 2: Dense Vectorization (BAAI/bge-small-en-v1.5)",
+        latency: "21 ms",
+        desc: "Encodes the query text into a normalized 384-dimensional dense vector using local SentenceTransformer on CPU.",
+        code: `query_vector = embedder.encode(query, normalize_embeddings=True)\n# Shape: (384,) | Tensor Device: CPU\n# Sample Floats: [-0.0421, 0.0814, 0.0159, -0.0632, ...]`
+      },
+      {
+        num: 3,
+        title: "Stage 3: Parallel Hybrid Retrieval (Qdrant ANN + BM25 Okapi)",
+        latency: "68 ms",
+        desc: "Executes concurrent dense semantic ANN search in Qdrant and lexical keyword matching across all 2,810 book chunks.",
+        code: `# Branch A: Qdrant HNSW Cosine Search -> Top 20 Candidates (Best: 0.8186)\n# Branch B: BM25 Okapi Frequency Search -> Top 20 Candidates (Best: 32.4496)\n# Total Candidates Retrieved: 28 unique chunks`
+      },
+      {
+        num: 4,
+        title: "Stage 4: Reciprocal Rank Fusion Re-Ranking (k = 60)",
+        latency: "4 ms",
+        desc: "Computes reciprocal rank scores: score = 1/(60 + DenseRank) + 1/(60 + LexicalRank). BM25 rescues Chunk #4, promoting it by +16 positions into the context window.",
+        code: `# Chunk #1: 1/(60+1) + 1/(60+2)  = 0.03252 -> Final Rank #1\n# Chunk #2: 1/(60+11) + 1/(60+3) = 0.02996 -> Final Rank #2\n# Chunk #4: 1/(60+20) + 1/(60+1) = 0.02889 -> Promoted from #20 to #4!`
+      },
+      {
+        num: 5,
+        title: "Stage 5: Relevance Threshold Guardrail Verification",
+        latency: "2 ms",
+        desc: "Evaluates whether top-ranked candidates meet the minimum cosine similarity threshold (0.38) or non-zero BM25 score. Guarantees abstention on garbage queries.",
+        code: `max_dense = 0.8186 (Threshold: 0.3800)\nis_sufficient = max_dense >= 0.38 or max_lexical > 0\n# Guardrail Status: PASSED (Proceeding to Context Assembly)`
+      },
+      {
+        num: 6,
+        title: "Stage 6: Grounded Evidence Context Packaging",
+        latency: "5 ms",
+        desc: "Packages top 6 re-ranked chunks with Evidence IDs [E1..E6], filename, and page numbers within a 5,000 token budget.",
+        code: `--- EVIDENCE [E1] ---\nSource: "Deep Learning from Scratch" (Pages: 176, 177)\nContent: "Figure 6-6. Another order in which data could flow during its forward pass..."\n--- EVIDENCE [E5] ---\nContent: "for layer in self.layers: X = layer.forward(X)..."`
+      },
+      {
+        num: 7,
+        title: "Stage 7: Grounded LLM Generation (OpenAI gpt-4o-mini)",
+        latency: "1,381 ms",
+        desc: "Generates an answer grounded strictly in the provided evidence blocks with zero ungrounded assertions.",
+        code: `client.chat.completions.create(\n    model="gpt-4o-mini",\n    temperature=0.1,\n    messages=[{"role": "system", ...}, {"role": "user", ...}]\n)\n# Output Tokens Generated: 218 tokens`
+      },
+      {
+        num: 8,
+        title: "Stage 8: Citation Validation & Normalization",
+        latency: "18 ms",
+        desc: "Regex parser verifies every [E*] reference against ground truth evidence, strips hallucinations, and formats inline citations as [Book Title, pp. X-Y].",
+        code: `# Validated [E1] -> [Deep Learning from Scratch, pp. 176-177]\n# Validated [E5] -> [Deep Learning from Scratch, pp. 86-87]\n# Hallucinated citations stripped: 0 | Verification Status: 100% GROUNDED`
+      }
+    ];
+
+    function showStage(stageNum) {
+      const stage = stages[stageNum - 1];
+      document.querySelectorAll('.step-pill').forEach((p, idx) => {
+        p.classList.remove('active');
+        if (idx < stageNum - 1) {
+          p.classList.add('completed');
+        } else {
+          p.classList.remove('completed');
+        }
+      });
+      document.getElementById('step-' + stageNum).classList.add('active');
+
+      document.getElementById('stage-title').textContent = stage.title;
+      document.getElementById('stage-latency').textContent = "Latency: " + stage.latency;
+      document.getElementById('stage-description').textContent = stage.desc;
+      document.getElementById('stage-code').textContent = stage.code;
+
+      if (stageNum === 8) {
+        document.getElementById('final-answer-preview').style.display = 'block';
+      }
+    }
+
+    let simInterval = null;
+    function startFullSimulation() {
+      if (simInterval) clearInterval(simInterval);
+      const btn = document.getElementById('btn-run-simulation');
+      btn.disabled = true;
+      btn.textContent = "Simulating Pipeline...";
+      document.getElementById('final-answer-preview').style.display = 'none';
+
+      let current = 1;
+      showStage(current);
+
+      simInterval = setInterval(() => {
+        current += 1;
+        if (current <= 8) {
+          showStage(current);
+        } else {
+          clearInterval(simInterval);
+          btn.disabled = false;
+          btn.innerHTML = "<span>▶</span> Replay Simulation";
+        }
+      }, 1200);
+    }
+  </script>
+</body>
+</html>
