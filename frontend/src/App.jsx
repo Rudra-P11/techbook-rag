@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { marked } from 'marked';
 import { 
   BookOpen, 
   Send, 
@@ -25,8 +26,20 @@ import {
   Sliders,
   PanelLeftClose,
   PanelLeftOpen,
-  ArrowRight
+  ArrowRight,
+  Mic,
+  Square
 } from 'lucide-react';
+
+marked.setOptions({
+  breaks: true,
+  gfm: true
+});
+
+function MarkdownBody({ content }) {
+  const html = marked.parse(content || '');
+  return <div className="markdown-body" dangerouslySetInnerHTML={{ __html: html }} />;
+}
 
 export default function App() {
   // Theme state: dark / light
@@ -38,6 +51,14 @@ export default function App() {
   const [selectedModel, setSelectedModel] = useState('gpt-4o-mini');
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [bookSearch, setBookSearch] = useState('');
+
+  // Voice speech-to-text recognition state
+  const [isRecording, setIsRecording] = useState(false);
+  const [countdown, setCountdown] = useState(30);
+  const [voiceInterim, setVoiceInterim] = useState('');
+  const recognitionRef = useRef(null);
+  const timerRef = useRef(null);
+  const speechTextRef = useRef('');
 
   const [messages, setMessages] = useState([
     {
@@ -90,9 +111,109 @@ export default function App() {
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, loading]);
+  const cleanupVoice = () => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+    if (recognitionRef.current) {
+      try {
+        recognitionRef.current.stop();
+      } catch (e) {}
+      recognitionRef.current = null;
+    }
+    setIsRecording(false);
+    setCountdown(30);
+  };
+
+  const startRecording = () => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert("Speech recognition is not supported in this browser. Please use Chrome, Edge, or Safari.");
+      return;
+    }
+
+    if (isRecording) {
+      stopRecording(true);
+      return;
+    }
+
+    try {
+      const recognition = new SpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.lang = 'en-US';
+
+      speechTextRef.current = '';
+      setVoiceInterim('');
+      setCountdown(30);
+
+      recognition.onresult = (event) => {
+        let interim = '';
+        let final = speechTextRef.current;
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          if (event.results[i].isFinal) {
+            final += event.results[i][0].transcript + ' ';
+          } else {
+            interim += event.results[i][0].transcript;
+          }
+        }
+        speechTextRef.current = final;
+        const combined = (final + interim).trim();
+        setVoiceInterim(combined);
+        setInput(combined);
+      };
+
+      recognition.onerror = (event) => {
+        console.warn("Speech recognition error:", event.error);
+        if (event.error === 'not-allowed') {
+          alert("Microphone permission was denied. Please allow microphone access in your browser.");
+          cleanupVoice();
+        }
+      };
+
+      recognition.onend = () => {
+        // Recognition completed naturally
+      };
+
+      recognition.start();
+      recognitionRef.current = recognition;
+      setIsRecording(true);
+
+      // Max 30 seconds countdown or stop button whichever is smaller
+      let secondsLeft = 30;
+      timerRef.current = setInterval(() => {
+        secondsLeft -= 1;
+        setCountdown(secondsLeft);
+        if (secondsLeft <= 0) {
+          stopRecording(true);
+        }
+      }, 1000);
+
+    } catch (err) {
+      console.error("Failed to start voice recognition:", err);
+      alert("Could not start microphone: " + err.message);
+      cleanupVoice();
+    }
+  };
+
+  const stopRecording = (shouldQuery = true) => {
+    const capturedText = (speechTextRef.current || voiceInterim || input).trim();
+    cleanupVoice();
+    setVoiceInterim('');
+
+    if (capturedText) {
+      setInput(capturedText);
+      if (shouldQuery) {
+        handleSend(capturedText);
+      }
+    }
+  };
+
+  const cancelRecording = () => {
+    cleanupVoice();
+    setVoiceInterim('');
+  };
 
   const handleSend = async (queryText) => {
     const q = queryText || input;
@@ -520,7 +641,9 @@ export default function App() {
                   </div>
                 )}
 
-                <div className="message-text">{msg.content}</div>
+                <div className="message-text">
+                  <MarkdownBody content={msg.content} />
+                </div>
 
                 {/* Inline Citations */}
                 {msg.citations && msg.citations.length > 0 && (
@@ -647,11 +770,43 @@ export default function App() {
 
         {/* Input Bar */}
         <div className="input-dock">
+          {/* Floating Voice Recording Banner */}
+          {isRecording && (
+            <div className="voice-recording-banner">
+              <div className="voice-status-info">
+                <div className="voice-rec-indicator" />
+                <span className="voice-countdown-badge">
+                  {countdown}s remaining
+                </span>
+                <span className="voice-live-text">
+                  {voiceInterim ? `"${voiceInterim}"` : 'Listening... Speak your technical query'}
+                </span>
+              </div>
+              <div className="voice-actions">
+                <button 
+                  className="btn-stop-rec"
+                  onClick={() => stopRecording(true)}
+                  title="Stop recording and query model"
+                >
+                  <Square size={12} fill="currentColor" />
+                  <span>Stop & Query</span>
+                </button>
+                <button 
+                  className="btn-cancel-rec"
+                  onClick={cancelRecording}
+                  title="Cancel voice input"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+
           <div className="input-container">
             <textarea
               id="chat-input"
               className="chat-textarea"
-              placeholder="Ask any technical question from your book library (e.g. SQL indexing, backpropagation, Python memory)..."
+              placeholder={isRecording ? "Listening to your voice..." : "Ask any technical question from your book library (e.g. SQL indexing, backpropagation, Python memory)..."}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => {
@@ -662,6 +817,18 @@ export default function App() {
               }}
               rows={1}
             />
+
+            {/* Voice Mic Button */}
+            <button
+              id="mic-button"
+              className={`mic-btn ${isRecording ? 'recording' : ''}`}
+              onClick={isRecording ? () => stopRecording(true) : startRecording}
+              disabled={loading}
+              title={isRecording ? `Recording (${countdown}s left). Click to stop & query` : "Click to speak your question (max 30s)"}
+            >
+              {isRecording ? <Square size={15} fill="currentColor" /> : <Mic size={17} />}
+            </button>
+
             <button
               id="send-button"
               className="send-btn"
