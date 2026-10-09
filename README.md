@@ -32,129 +32,32 @@ Every answer is grounded in real textbook passages with **verifiable page-level 
 
 ---
 
-<br>
-
-## Architecture
-
-<br>
+## Architecture & System Pipeline
 
 ```mermaid
-graph TD
-    A["🧑‍💻 User Query"] --> B["🛡️ Guardrail Defense<br><sub>Prompt injection filter · Domain scope check</sub>"]
-    B --> C["🔢 BGE-Small Vectorizer<br><sub>384d dense embedding · 15-25ms CPU</sub>"]
-    C --> D["⚡ Parallel Hybrid Retrieval"]
-    
-    D --> E["🎯 Dense ANN Search<br><sub>Qdrant HNSW Cosine</sub>"]
-    D --> F["📝 Lexical BM25 Okapi<br><sub>2,810 chunk term frequencies</sub>"]
-    
-    E --> G["🔀 Reciprocal Rank Fusion<br><sub>k = 60 · Score = 1/(60+rank)</sub>"]
-    F --> G
-    
-    G --> H["📦 Context Builder<br><sub>Evidence [E1..E6] · 5,000 token budget</sub>"]
-    H --> I["🤖 OpenAI gpt-4o-mini<br><sub>Grounded synthesis · temp=0.1</sub>"]
-    I --> J["✅ Citation Verification<br><sub>Regex validation · Hallucination stripping</sub>"]
-    J --> K["📄 Grounded Response<br><sub>Book Title, pp. X-Y citations</sub>"]
-
-    style A fill:#faf9f5,stroke:#d5d1c4,color:#1f1e1d
-    style B fill:#f9edea,stroke:#c2593f,color:#1f1e1d
-    style C fill:#fdf3e7,stroke:#b86e1e,color:#1f1e1d
-    style D fill:#faf9f5,stroke:#d5d1c4,color:#1f1e1d
-    style E fill:#f9edea,stroke:#c2593f,color:#1f1e1d
-    style F fill:#edf6ee,stroke:#3d7a46,color:#1f1e1d
-    style G fill:#f9edea,stroke:#c2593f,color:#1f1e1d
-    style H fill:#eef2f5,stroke:#4a5c68,color:#1f1e1d
-    style I fill:#fdf3e7,stroke:#b86e1e,color:#1f1e1d
-    style J fill:#edf6ee,stroke:#3d7a46,color:#1f1e1d
-    style K fill:#edf6ee,stroke:#3d7a46,color:#1f1e1d
+graph LR
+    Q[Query] --> G[Guardrails] --> E[BGE-Small Vectorizer]
+    E --> H[Hybrid Search<br/>Dense + BM25] --> RRF[RRF k=60<br/>Re-Ranking]
+    RRF --> Ctx[Context Builder<br/>Evidence E1..E6] --> LLM[gpt-4o-mini] --> V[Citation Verification]
 ```
 
-<br>
+<details>
+<summary><b>🔍 System Specifications & Specifications Grid</b></summary>
+
+| Component | Technical Details | Performance / SLA |
+| :--- | :--- | :--- |
+| **Embeddings** | `BAAI/bge-small-en-v1.5` (384d, 33M params) | Local CPU (15–25 ms inference, 0 API cost) |
+| **Vector Store** | Qdrant (HNSW Cosine, 2,810 chunks) | Sub-ms graph traversal (Docker / embedded fallback) |
+| **Lexical Search** | BM25 Okapi term frequencies | Exact keyword match rescue |
+| **Re-Ranking** | Reciprocal Rank Fusion ($k=60$) | $1/(60 + \text{Rank}_{\text{dense}}) + 1/(60 + \text{Rank}_{\text{lexical}})$ |
+| **Chunking** | 700 tokens, 15% overlap (105 tokens) | Sentence & code block boundary snapping |
+| **LLM & Grounding** | OpenAI `gpt-4o-mini` (temp 0.1) | Grounded evidence `$E1..E6$` + citation validation |
+| **Latency SLA** | Retrieval: $<80\text{ ms}$ | End-to-end: $1.2\text{s} - 2.8\text{s}$ |
+
+</details>
 
 ---
 
-<br>
-
-## System Specifications
-
-<br>
-
-<table>
-  <tr>
-    <td align="center" width="160"><br><kbd>&nbsp; Embeddings &nbsp;</kbd><br><br></td>
-    <td><b>BAAI/bge-small-en-v1.5</b><br><sub>33.3M parameters · 384 dimensions · 15–25 ms CPU inference · ~150 MB RAM<br>Local SentenceTransformer — zero API cost per query</sub></td>
-  </tr>
-  <tr>
-    <td align="center"><br><kbd>&nbsp; Vector Store &nbsp;</kbd><br><br></td>
-    <td><b>Qdrant (HNSW Cosine)</b><br><sub>2,810 indexed chunks · 1.5 KB per vector · sub-millisecond HNSW graph traversal<br>Auto-fallback: Docker → Embedded persistent storage</sub></td>
-  </tr>
-  <tr>
-    <td align="center"><br><kbd>&nbsp; Lexical Search &nbsp;</kbd><br><br></td>
-    <td><b>BM25 Okapi</b><br><sub>Term frequency–inverse document frequency scoring over all 2,810 chunks<br>Rescues exact keyword matches that dense embeddings miss</sub></td>
-  </tr>
-  <tr>
-    <td align="center"><br><kbd>&nbsp; Re-Ranking &nbsp;</kbd><br><br></td>
-    <td><b>Reciprocal Rank Fusion (k = 60)</b><br><sub>Score = 1/(60 + DenseRank) + 1/(60 + LexicalRank)<br>Rank-based fusion eliminates score normalization vulnerabilities</sub></td>
-  </tr>
-  <tr>
-    <td align="center"><br><kbd>&nbsp; Chunking &nbsp;</kbd><br><br></td>
-    <td><b>700 tokens · 15% overlap (105 tokens)</b><br><sub>Token-aware sentence boundary snapping preserves code blocks and multi-line SQL CTEs<br>11 books → 2,810 searchable passages</sub></td>
-  </tr>
-  <tr>
-    <td align="center"><br><kbd>&nbsp; Generation &nbsp;</kbd><br><br></td>
-    <td><b>OpenAI gpt-4o-mini (temp = 0.1)</b><br><sub>Grounded synthesis from evidence blocks · Evidence IDs [E1..E6]<br>Citation validation with hallucination stripping</sub></td>
-  </tr>
-  <tr>
-    <td align="center"><br><kbd>&nbsp; Latency SLA &nbsp;</kbd><br><br></td>
-    <td><b>Retrieval: &lt; 80 ms &nbsp;·&nbsp; End-to-end: 1.2 – 2.8 s</b><br><sub>Warm retrieval measured at ~68 ms · Total latency dominated by OpenAI generation</sub></td>
-  </tr>
-</table>
-
-<br>
-
----
-
-<br>
-
-## Key Features
-
-<br>
-
-<table>
-  <tr>
-    <td width="60" align="center">🔢</td>
-    <td><b>Zero-API-Cost Local Embeddings</b></td>
-    <td>Uses <code>BAAI/bge-small-en-v1.5</code> via SentenceTransformers running locally on CPU — no external embedding API calls needed</td>
-  </tr>
-  <tr>
-    <td align="center">🗃️</td>
-    <td><b>Resilient Vector Store</b></td>
-    <td>Connects to remote/Docker Qdrant if <code>QDRANT_URL</code> is set; auto-fallback to embedded persistent storage at <code>./data/qdrant_storage</code></td>
-  </tr>
-  <tr>
-    <td align="center">🔀</td>
-    <td><b>Hybrid Retrieval + RRF</b></td>
-    <td>Dense semantic similarity merged with BM25 Okapi lexical search using Reciprocal Rank Fusion (<i>k</i> = 60)</td>
-  </tr>
-  <tr>
-    <td align="center">📎</td>
-    <td><b>Verifiable Citations</b></td>
-    <td>Every fact tagged with evidence IDs <code>[E1]</code>, <code>[E2]</code> → human-readable citations like <code>[Deep Learning from Scratch, p. 72]</code></td>
-  </tr>
-  <tr>
-    <td align="center">🛡️</td>
-    <td><b>Security Guardrails</b></td>
-    <td>Prompt injection filtering, input length constraints, domain scope enforcement, hallucinated citation tag stripping</td>
-  </tr>
-  <tr>
-    <td align="center">⚡</td>
-    <td><b>Sub-5-Second Latency</b></td>
-    <td>Full retrieval + generation + verification pipeline with measured latency telemetry per request</td>
-  </tr>
-</table>
-
-<br>
-
----
 
 <br>
 
