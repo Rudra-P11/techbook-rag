@@ -1,0 +1,6 @@
+{"question_id": "q01", "query": "What is the difference between an INNER JOIN and a LEFT JOIN in SQL?", "category": "SQL", "answerable": true, "expected_terms": ["inner join", "left join", "matching rows", "null"]}
+{"question_id": "q02", "query": "Explain the difference between a list and a tuple in Python.", "category": "Python", "answerable": true, "expected_terms": ["mutable", "immutable", "list", "tuple"]}
+{"question_id": "q03", "query": "Compare supervised learning and unsupervised learning.", "category": "Machine Learning", "answerable": true, "expected_terms": ["labeled", "unlabeled", "clustering", "classification"]}
+{"question_id": "q04", "query": "How does gradient descent optimize weights in neural networks?", "category": "Deep Learning", "answerable": true, "expected_terms": ["gradient", "loss", "learning rate", "weights"]}
+{"question_id": "q05", "query": "What is the role of eigenvalues and eigenvectors in principal component analysis?", "category": "Mathematics", "answerable": true, "expected_terms": ["eigenvalue", "eigenvector", "pca", "variance"]}
+{"question_id": "q06", "query": "What was the exact internal corporate password for the private database in 1999?", "category": "Unanswerable", "answerable": false, "expected_terms": []}
