@@ -1,43 +1,17 @@
-<div align="center">
+# TechBook RAG
 
-<br>
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-1f1e1d?style=flat-square&logo=python&logoColor=white)](https://www.python.org/downloads/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.109+-1f1e1d?style=flat-square&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![Qdrant](https://img.shields.io/badge/Qdrant-Vector_DB-1f1e1d?style=flat-square&logoColor=white)](https://qdrant.tech)
+[![Embeddings](https://img.shields.io/badge/Embeddings-BGE_Small_384d-1f1e1d?style=flat-square&logo=huggingface&logoColor=white)](https://huggingface.co/BAAI/bge-small-en-v1.5)
+[![LLM](https://img.shields.io/badge/LLM-gpt--4o--mini-1f1e1d?style=flat-square&logo=openai&logoColor=white)](https://openai.com)
 
-<samp>
+**Intelligent Technical Knowledge Assistant** — Production-grade RAG over 11 technical books (2,810 chunks) using hybrid Dense + BM25 search with Reciprocal Rank Fusion.
 
-# ⬡ &nbsp; TECHBOOK RAG
-
-**Intelligent Technical Knowledge Assistant**
-
-</samp>
-
-<br>
-
-<p>
-  <a href="https://www.python.org/downloads/"><img src="https://img.shields.io/badge/python-3.11+-1f1e1d?style=flat-square&logo=python&logoColor=white" alt="Python 3.11+"></a>&nbsp;
-  <a href="https://fastapi.tiangolo.com"><img src="https://img.shields.io/badge/FastAPI-0.109+-1f1e1d?style=flat-square&logo=fastapi&logoColor=white" alt="FastAPI"></a>&nbsp;
-  <a href="https://qdrant.tech"><img src="https://img.shields.io/badge/Qdrant-Vector_DB-1f1e1d?style=flat-square&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCI+PHRleHQgeT0iMTgiIGZvbnQtc2l6ZT0iMTYiPuKXiDwvdGV4dD48L3N2Zz4=&logoColor=white" alt="Qdrant"></a>&nbsp;
-  <a href="https://huggingface.co/BAAI/bge-small-en-v1.5"><img src="https://img.shields.io/badge/Embeddings-BGE_Small_384d-1f1e1d?style=flat-square&logo=huggingface&logoColor=white" alt="Embeddings"></a>&nbsp;
-  <a href="https://openai.com"><img src="https://img.shields.io/badge/LLM-gpt--4o--mini-1f1e1d?style=flat-square&logo=openai&logoColor=white" alt="OpenAI"></a>
-</p>
-
-<br>
-
-<p>
-  <a href="https://rudra-p11.github.io/techbook-rag/"><img src="https://img.shields.io/badge/%E2%96%B6_LIVE_INTERACTIVE_SHOWCASE-Architecture_%26_Simulations-c2593f?style=for-the-badge" alt="Live Showcase"></a>&nbsp;&nbsp;
-  <a href="https://rudra-p11.github.io/techbook-rag/case_study_rrf_retrieval.html"><img src="https://img.shields.io/badge/%F0%9F%93%84_CASE_STUDY-RRF_k%3D60_Forensic_Analysis-3d7a46?style=for-the-badge" alt="Case Study"></a>
-</p>
-
-<br>
-
-<sub>Production-grade Retrieval-Augmented Generation over <b>11 technical books</b> · <b>2,810 chunks</b> · <b>384d dense vectors</b></sub>
-<br>
-<sub>Hybrid Dense + BM25 Okapi search · Reciprocal Rank Fusion re-ranking · Grounded citation verification</sub>
-
-<br><br>
+🔗 **Quick Links:** [Live Interactive Architecture Showcase](https://rudra-p11.github.io/techbook-rag/) · [RRF k=60 Forensic Case Study](https://rudra-p11.github.io/techbook-rag/case_study_rrf_retrieval.html)
 
 ---
 
-</div>
 
 <br>
 
