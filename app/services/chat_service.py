@@ -108,8 +108,10 @@ class ChatService:
             raw_answer, gen_latency_ms = generation_client.generate_answer(
                 query=sanitized_query,
                 context=context_text,
-                model=request.model
+                model=request.model,
+                history=request.history
             )
+
         except Exception as e:
             total_latency_ms = int((time.perf_counter() - start_total) * 1000)
             logger.error(f"Generation failure: {e}")

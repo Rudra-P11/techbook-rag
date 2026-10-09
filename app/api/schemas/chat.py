@@ -10,10 +10,12 @@ class ChatFilters(BaseModel):
 class ChatRequest(BaseModel):
     query: str = Field(..., max_length=4000)
     conversation_id: Optional[str] = None
+    history: Optional[List[Dict[str, str]]] = Field(default_factory=list, description="Prior conversation messages [{'role': 'user'|'assistant', 'content': '...'}]")
     filters: Optional[ChatFilters] = Field(default_factory=ChatFilters)
     top_k: int = Field(default=6, ge=1, le=20)
     model: Optional[str] = Field(default=None, description="Generation model name (e.g. gpt-4o-mini, gpt-4o)")
     include_retrieval_debug: bool = True
+
 
 
 class Citation(BaseModel):

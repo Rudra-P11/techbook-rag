@@ -25,9 +25,15 @@ class GenerationClient:
             )
         return self._client
 
-    def generate_answer(self, query: str, context: str, model: Optional[str] = None) -> Tuple[str, int]:
+    def generate_answer(
+        self, 
+        query: str, 
+        context: str, 
+        model: Optional[str] = None,
+        history: Optional[list] = None
+    ) -> Tuple[str, int]:
         """
-        Sends the grounded query and retrieved evidence context to OpenAI.
+        Sends the grounded query, conversation history, and retrieved evidence context to OpenAI.
         Returns:
             (raw_answer_text, latency_ms)
         """
@@ -37,19 +43,29 @@ class GenerationClient:
         user_content = format_user_prompt(query, context)
         selected_model = model or self.model
 
+        # Build message history for multi-turn conversation memory
+        messages = [{"role": "system", "content": SYSTEM_PROMPT}]
+        if history:
+            # Append recent conversation turns (up to last 6 messages)
+            for turn in history[-6:]:
+                role = turn.get("role")
+                content = turn.get("content")
+                if role in ("user", "assistant") and content:
+                    messages.append({"role": role, "content": content})
+
+        messages.append({"role": "user", "content": user_content})
+
         try:
             response = client.chat.completions.create(
                 model=selected_model,
-                messages=[
-                    {"role": "system", "content": SYSTEM_PROMPT},
-                    {"role": "user", "content": user_content}
-                ],
+                messages=messages,
                 max_tokens=settings.OPENAI_MAX_OUTPUT_TOKENS,
                 temperature=0.1
             )
             raw_text = response.choices[0].message.content or ""
             latency_ms = int((time.perf_counter() - start_time) * 1000)
             return raw_text, latency_ms
+
 
         except Exception as e:
             logger.error(f"OpenAI generation error: {e}", exc_info=True)

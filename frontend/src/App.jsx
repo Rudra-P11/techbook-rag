@@ -229,12 +229,17 @@ export default function App() {
     setInput('');
     setLoading(true);
 
+    const historyPayload = messages
+      .filter((m) => m.role === 'user' || m.role === 'assistant')
+      .map((m) => ({ role: m.role, content: m.content }));
+
     try {
       const res = await fetch('/api/v1/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           query: q.trim(),
+          history: historyPayload,
           filters: {
             subjects: selectedSubjects.length > 0 ? selectedSubjects : []
           },
@@ -243,6 +248,7 @@ export default function App() {
           include_retrieval_debug: true
         })
       });
+
 
       if (!res.ok) {
         throw new Error(`Server returned HTTP ${res.status}`);
