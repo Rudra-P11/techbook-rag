@@ -52,9 +52,11 @@ graph LR
 | **Vector Store** | Qdrant (HNSW Cosine, 2,810 chunks) | Sub-ms graph traversal (Docker / embedded fallback) |
 | **Lexical Search** | BM25 Okapi term frequencies | Exact keyword match rescue |
 | **Re-Ranking** | Reciprocal Rank Fusion ($k=60$) | $1/(60 + \text{Rank}_{\text{dense}}) + 1/(60 + \text{Rank}_{\text{lexical}})$ |
+| **Memory** | **Sliding Window Multi-Turn History** | Preserves 6 prior dialogue turns for continuous Q&A |
 | **Chunking** | 700 tokens, 15% overlap (105 tokens) | Sentence & code block boundary snapping |
 | **LLM & Grounding** | OpenAI `gpt-4o-mini` (temp 0.1) | Grounded evidence `$E1..E6$` + citation validation |
 | **Latency SLA** | Retrieval: $<80\text{ ms}$ | End-to-end: $1.2\text{s} - 2.8\text{s}$ |
+
 
 </details>
 

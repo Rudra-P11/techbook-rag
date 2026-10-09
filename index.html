@@ -1688,17 +1688,18 @@ return X
           },
 
           {
-            title: "Stage 6: Grounded Evidence Context Packaging",
+            title: "Stage 6: Context Packaging & Multi-Turn Conversation Memory",
             latency: "5 ms",
-            desc: "Packages top 6 re-ranked chunks with Evidence IDs [E1..E6], filename, and page numbers within a 5,000 token budget.",
-            code: `--- EVIDENCE [E1] ---\nSource: "Deep Learning from Scratch" (Pages: 176, 177)\nContent: "Figure 6-6. Another order in which data could flow during its forward pass..."\n--- EVIDENCE [E5] ---\nContent: "for layer in self.layers: X = layer.forward(X)..."`
+            desc: "Packages JEV-selected evidence [E1..E4] alongside sliding window conversation memory (last 6 turns) to maintain dialogue context for follow-up questions.",
+            code: `--- CONVERSATION MEMORY (Last 6 Turns) ---\nUser: "What is an INNER JOIN?" -> Assistant: "An INNER JOIN matches rows..."\n--- EVIDENCE [E1] ---\nSource: "Deep Learning from Scratch" (Pages: 176, 177)\nContent: "Figure 6-6. Another order in which data could flow during its forward pass..."`
           },
           {
             title: "Stage 7: Grounded LLM Generation (OpenAI gpt-4o-mini)",
             latency: "1,381 ms",
-            desc: "Generates an answer grounded strictly in the provided evidence blocks with zero ungrounded assertions.",
-            code: `client.chat.completions.create(\n    model="gpt-4o-mini",\n    temperature=0.1,\n    messages=[{"role": "system", ...}, {"role": "user", ...}]\n)\n# Output Tokens Generated: 218 tokens`
+            desc: "Generates an answer grounded strictly in retrieved evidence blocks while maintaining conversation history context for follow-up queries.",
+            code: `client.chat.completions.create(\n    model="gpt-4o-mini",\n    temperature=0.1,\n    messages=[{"role": "system", ...}, *history_turns, {"role": "user", ...}]\n)\n# Output Tokens Generated: 218 tokens | Conversation Memory: Active`
           },
+
           {
             title: "Stage 8: Citation Validation & Normalization",
             latency: "18 ms",

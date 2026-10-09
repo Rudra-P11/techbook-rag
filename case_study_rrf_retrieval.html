@@ -941,7 +941,11 @@ for layer in reversed(self.layers):
         <li style="margin-bottom: 8px;">
           <strong>RRF eliminates score normalization vulnerabilities:</strong> Because reciprocal rank fusion does not require min-max scaling or z-score normalization across disjoint score distributions, it remains robust across all queries and domain shifts.
         </li>
+        <li style="margin-bottom: 8px;">
+          <strong>Multi-turn dialogue memory preserves context continuity:</strong> A sliding-window context buffer packages prior conversation history alongside JEV-selected evidence, allowing users to ask continuous follow-up questions (<em>"Give a Python example for that"</em>, <em>"Compare this with backpropagation"</em>) without losing context.
+        </li>
       </ol>
+
     </section>
 
     <footer class="footer">
