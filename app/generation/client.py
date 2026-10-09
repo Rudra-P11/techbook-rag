@@ -25,7 +25,7 @@ class GenerationClient:
             )
         return self._client
 
-    def generate_answer(self, query: str, context: str) -> Tuple[str, int]:
+    def generate_answer(self, query: str, context: str, model: Optional[str] = None) -> Tuple[str, int]:
         """
         Sends the grounded query and retrieved evidence context to OpenAI.
         Returns:
@@ -35,10 +35,11 @@ class GenerationClient:
         client = self._get_client()
 
         user_content = format_user_prompt(query, context)
+        selected_model = model or self.model
 
         try:
             response = client.chat.completions.create(
-                model=self.model,
+                model=selected_model,
                 messages=[
                     {"role": "system", "content": SYSTEM_PROMPT},
                     {"role": "user", "content": user_content}
