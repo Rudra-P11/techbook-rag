@@ -4,7 +4,13 @@
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.109+-green.svg)](https://fastapi.tiangolo.com)
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.38+-red.svg)](https://streamlit.io)
 [![Qdrant](https://img.shields.io/badge/Qdrant-Vector%20DB-orange.svg)](https://qdrant.tech)
-[![Embeddings](https://img.shields.io/badge/Embeddings-BAAI%2Fbge--small--en--v1.5-purple.svg)](https://huggingface.co/BAAI/bge-small-en-v1.5)
+[![Live Interactive Showcase](https://img.shields.io/badge/Interactive%20Showcase-Live%20Architecture%20%26%20Simulations-c2593f.svg)](https://rudra-p11.github.io/techbook-rag/)
+[![Empirical Case Study](https://img.shields.io/badge/Case%20Study-RRF%20k%3D60%20Forensic%20Analysis-3d7a46.svg)](https://rudra-p11.github.io/techbook-rag/case_study_rrf_retrieval.html)
+
+> 🌟 **Interactive System Showcase & Live Visual Simulations:**
+> Experience the animated neural tokenizer, draggable 2D semantic vector nebula, real-time RRF fusion physics sandbox, and 8-stage pipeline simulator directly in your browser:
+> - 🌐 **[Live Interactive Architecture Blueprint & Simulator](https://rudra-p11.github.io/techbook-rag/)**
+> - 📄 **[Empirical Case Study: Reciprocal Rank Fusion Retrieval Analysis](https://rudra-p11.github.io/techbook-rag/case_study_rrf_retrieval.html)**
 
 TechBook RAG is a production-grade, interview-ready Retrieval-Augmented Generation (RAG) system tailored for a collection of technical books covering **SQL, Python, Machine Learning, Deep Learning, Linear Algebra, and Software Engineering**.
 
