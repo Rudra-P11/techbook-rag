@@ -1319,13 +1319,10 @@
             <g transform="translate(10, 75)" onclick="showStage(1)">
               <rect class="node-box" width="70" height="60" />
               <text class="node-text" x="35" y="30">User Query</text>
-              <text class="node-subtext" x="35" y="44">Natural Text</text>
-            </g>
-
-            <g transform="translate(170, 75)" id="node-guardrail" onclick="showStage(1)">
-              <rect class="node-box" width="100" height="60" />
-              <text class="node-text" x="50" y="28">Guardrails</text>
-              <text class="node-subtext" x="50" y="44">&lt; 15ms Filter</text>
+              <text class="node-subtext"            <g transform="translate(170, 75)" id="node-guardrail" onclick="showStage(1)">
+              <rect class="node-box" width="105" height="60" style="stroke: var(--accent-clay); fill: #f9edea;" />
+              <text class="node-text" x="52" y="26" style="fill: var(--accent-clay);">JEV Pre-Gate</text>
+              <text class="node-subtext" x="52" y="42">System 1 Filter</text>
             </g>
 
             <g transform="translate(360, 20)" id="node-dense" onclick="showStage(2)">
@@ -1340,19 +1337,25 @@
               <text class="node-subtext" x="55" y="42">2,810 Chunks</text>
             </g>
 
-            <g transform="translate(560, 75)" id="node-rrf" onclick="showStage(4)">
-              <rect class="node-box" width="100" height="60" style="stroke: var(--accent-clay); fill: #fff7f4;" />
-              <text class="node-text" x="50" y="26" style="fill: var(--accent-clay);">RRF Fusion</text>
-              <text class="node-subtext" x="50" y="42">k = 60 Matrix</text>
+            <g transform="translate(540, 75)" id="node-rrf" onclick="showStage(4)">
+              <rect class="node-box" width="95" height="60" style="stroke: var(--accent-clay); fill: #fff7f4;" />
+              <text class="node-text" x="47" y="26" style="fill: var(--accent-clay);">RRF Fusion</text>
+              <text class="node-subtext" x="47" y="42">k = 60 Matrix</text>
             </g>
 
-            <g transform="translate(690, 75)" id="node-llm" onclick="showStage(7)">
-              <rect class="node-box" width="90" height="60" />
-              <text class="node-text" x="45" y="26">gpt-4o-mini</text>
-              <text class="node-subtext" x="45" y="42">Synthesis</text>
+            <g transform="translate(660, 75)" id="node-jev" onclick="showStage(5)">
+              <rect class="node-box" width="95" height="60" style="stroke: var(--accent-amber); fill: var(--accent-amber-bg);" />
+              <text class="node-text" x="47" y="26" style="fill: var(--accent-amber);">JEV Valuation</text>
+              <text class="node-subtext" x="47" y="42">Joint Utility</text>
             </g>
 
-            <g transform="translate(810, 75)" onclick="showStage(8)">
+            <g transform="translate(780, 75)" id="node-llm" onclick="showStage(7)">
+              <rect class="node-box" width="85" height="60" />
+              <text class="node-text" x="42" y="26">gpt-4o-mini</text>
+              <text class="node-subtext" x="42" y="42">Synthesis</text>
+            </g>
+
+            <g transform="translate(885, 75)" onclick="showStage(8)">
               <rect class="node-box" width="80" height="60" style="stroke: var(--accent-olive); fill: #f3faf4;" />
               <text class="node-text" x="40" y="26" style="fill: var(--accent-olive);">Verified Ans</text>
               <text class="node-subtext" x="40" y="42">pp. Citations</text>
@@ -1465,7 +1468,7 @@
         <div class="pipeline-stepper" id="stepper">
           <div class="step-pill active" id="step-1" onclick="showStage(1)">
             <span class="step-num">01</span>
-            <span class="step-name">Guardrail</span>
+            <span class="step-name">JEV Pre-Gate</span>
           </div>
           <div class="step-pill" id="step-2" onclick="showStage(2)">
             <span class="step-num">02</span>
@@ -1481,7 +1484,7 @@
           </div>
           <div class="step-pill" id="step-5" onclick="showStage(5)">
             <span class="step-num">05</span>
-            <span class="step-name">Relevance</span>
+            <span class="step-name">JEV Valuation</span>
           </div>
           <div class="step-pill" id="step-6" onclick="showStage(6)">
             <span class="step-num">06</span>
@@ -1493,7 +1496,6 @@
           </div>
           <div class="step-pill" id="step-8" onclick="showStage(8)">
             <span class="step-num">08</span>
-            <span class="step-name">Citation Verify</span>
           </div>
         </div>
 
