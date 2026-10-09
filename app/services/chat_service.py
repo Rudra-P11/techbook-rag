@@ -10,6 +10,7 @@ from app.api.schemas.chat import (
 from app.guardrails.prompt_injection import injection_guardrail
 from app.guardrails.citation_validation import citation_validator
 from app.guardrails.domain_guardrail import domain_guardrail
+from app.decision.jev_engine import jev_engine
 from app.services.retrieval_service import retrieval_service
 from app.generation.client import generation_client
 
@@ -45,7 +46,24 @@ class ChatService:
         if was_flagged:
             logger.warning(f"Query flagged by prompt injection guardrail: '{request.query}'")
 
-        # Step 3: Hybrid Retrieval
+        # Step 3: JEV System-1 Pre-Retrieval Fast Gate
+        jev_query_dec = jev_engine.evaluate_query_intent(sanitized_query)
+        if not jev_query_dec.requires_retrieval and jev_query_dec.direct_response:
+            total_latency_ms = int((time.perf_counter() - start_total) * 1000)
+            logger.info(f"JEV System-1 Fast Gate answered directly without retrieval (confidence: {jev_query_dec.confidence:.2f})")
+            return ChatResponse(
+                answer=jev_query_dec.direct_response,
+                citations=[],
+                retrieved_chunks=[],
+                metrics=ChatMetrics(
+                    retrieval_latency_ms=0,
+                    generation_latency_ms=0,
+                    total_latency_ms=total_latency_ms
+                ),
+                conversation_id=request.conversation_id
+            )
+
+        # Step 4: Hybrid Retrieval
         subjects = request.filters.subjects if request.filters else None
         document_ids = request.filters.document_ids if request.filters else None
 
@@ -56,19 +74,15 @@ class ChatService:
             top_k=request.top_k
         )
 
-        # Step 4: Relevance Threshold Guardrail (FR-07)
-        # Check if the retrieved evidence is actually relevant to the query.
-        max_dense_score = max([ev.get("dense_score", 0.0) for ev in evidence_list], default=0.0)
-        max_lexical_score = max([ev.get("lexical_score", 0.0) for ev in evidence_list], default=0.0)
-
-        is_insufficient = (
-            not evidence_list or 
-            (max_dense_score < RELEVANCE_DENSE_THRESHOLD and max_lexical_score <= 0.0)
+        # Step 5: JEV Joint Evidential Valuation & Redundancy Pruning
+        jev_context_res = jev_engine.calculate_joint_evidential_value(
+            evidence_list=evidence_list,
+            max_chunks=request.top_k or 6
         )
 
-        if is_insufficient:
+        if not jev_context_res.is_sufficient:
             total_latency_ms = int((time.perf_counter() - start_total) * 1000)
-            logger.info(f"Relevance threshold not met (dense: {max_dense_score:.3f}, lexical: {max_lexical_score:.3f}). Abstaining without LLM call.")
+            logger.info(f"JEV Relevance threshold not met (JEV score: {jev_context_res.total_jev_score:.3f}). Abstaining without LLM call.")
             return ChatResponse(
                 answer="The provided technical books do not contain sufficient information to answer this question.",
                 citations=[],
@@ -81,7 +95,15 @@ class ChatService:
                 conversation_id=request.conversation_id
             )
 
-        # Step 5: Generation via OpenAI
+        # Re-build optimal context text from JEV selected evidence
+        evidence_list = jev_context_res.selected_evidence
+        context_blocks = []
+        for idx, ev in enumerate(evidence_list, 1):
+            context_blocks.append(f"[E{idx}] {ev.get('title', 'Textbook')} (Pages {ev.get('pages', 'N/A')}):\n{ev.get('text', '')}")
+        context_text = "\n\n".join(context_blocks)
+
+        # Step 6: Generation via OpenAI
+
         try:
             raw_answer, gen_latency_ms = generation_client.generate_answer(
                 query=sanitized_query,

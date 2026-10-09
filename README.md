@@ -5,8 +5,9 @@
 [![Qdrant](https://img.shields.io/badge/Qdrant-Vector_DB-1f1e1d?style=flat-square&logoColor=white)](https://qdrant.tech)
 [![Embeddings](https://img.shields.io/badge/Embeddings-BGE_Small_384d-1f1e1d?style=flat-square&logo=huggingface&logoColor=white)](https://huggingface.co/BAAI/bge-small-en-v1.5)
 [![LLM](https://img.shields.io/badge/LLM-gpt--4o--mini-1f1e1d?style=flat-square&logo=openai&logoColor=white)](https://openai.com)
+[![Decision Model](https://img.shields.io/badge/Decision_Model-JEV_System_1-c2593f?style=flat-square)](app/decision/jev_engine.py)
 
-**Intelligent Technical Knowledge Assistant** — Production-grade RAG over 11 technical books (2,810 chunks) using hybrid Dense + BM25 search with Reciprocal Rank Fusion.
+**Intelligent Technical Knowledge Assistant** — Adaptive RAG + JEV System-1 Decision Engine over 11 technical books (2,810 chunks) using hybrid Dense + BM25 search, Reciprocal Rank Fusion, and Joint Evidential Valuation.
 
 🔗 **Quick Links:** [Live Interactive Architecture Showcase](https://rudra-p11.github.io/techbook-rag/) · [RRF k=60 Forensic Case Study](https://rudra-p11.github.io/techbook-rag/case_study_rrf_retrieval.html)
 
@@ -17,7 +18,7 @@
 
 ## Overview
 
-TechBook RAG is a **production-grade, interview-ready** Retrieval-Augmented Generation system built over a curated library of **11 technical textbooks** spanning SQL, Python, Machine Learning, Deep Learning, Linear Algebra, and Software Engineering.
+TechBook RAG is a **production-grade, interview-ready** Retrieval-Augmented Generation system powered by **JEV (System 1 Decision Engine & Joint Evidential Valuation)** built over a curated library of **11 technical textbooks** spanning SQL, Python, Machine Learning, Deep Learning, Linear Algebra, and Software Engineering.
 
 Every answer is grounded in real textbook passages with **verifiable page-level citations** — no hallucinations, no ungrounded claims.
 
@@ -36,9 +37,9 @@ Every answer is grounded in real textbook passages with **verifiable page-level 
 
 ```mermaid
 graph LR
-    Q[Query] --> G[Guardrails] --> E[BGE-Small Vectorizer]
+    Q[Query] --> JEV1[JEV Pre-Retrieval Gate] --> E[BGE-Small Vectorizer]
     E --> H[Hybrid Search<br/>Dense + BM25] --> RRF[RRF k=60<br/>Re-Ranking]
-    RRF --> Ctx[Context Builder<br/>Evidence E1..E6] --> LLM[gpt-4o-mini] --> V[Citation Verification]
+    RRF --> JEV2[JEV Context Valuation<br/>Redundancy Pruning] --> LLM[gpt-4o-mini] --> V[Citation Verification]
 ```
 
 <details>
@@ -46,6 +47,7 @@ graph LR
 
 | Component | Technical Details | Performance / SLA |
 | :--- | :--- | :--- |
+| **Decision Model** | **JEV (System 1 Engine)** | Zero-API-cost probabilistic pre-gate & joint evidential valuation |
 | **Embeddings** | `BAAI/bge-small-en-v1.5` (384d, 33M params) | Local CPU (15–25 ms inference, 0 API cost) |
 | **Vector Store** | Qdrant (HNSW Cosine, 2,810 chunks) | Sub-ms graph traversal (Docker / embedded fallback) |
 | **Lexical Search** | BM25 Okapi term frequencies | Exact keyword match rescue |
@@ -57,6 +59,7 @@ graph LR
 </details>
 
 ---
+
 
 
 <br>
