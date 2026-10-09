@@ -6,7 +6,7 @@
   <title>TechBook RAG — Architecture Blueprint & Interactive End-to-End Pipeline Showcase</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg-canvas: #faf9f5;
@@ -42,11 +42,12 @@
       font-family: var(--font-sans);
       line-height: 1.65;
       -webkit-font-smoothing: antialiased;
-      padding: 48px 24px 100px 24px;
+      padding: 40px 20px 100px 20px;
+      overflow-x: hidden;
     }
 
     .container {
-      max-width: 960px;
+      max-width: 980px;
       margin: 0 auto;
     }
 
@@ -55,8 +56,8 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 44px;
-      padding-bottom: 20px;
+      margin-bottom: 40px;
+      padding-bottom: 18px;
       border-bottom: 1px solid var(--border-light);
     }
     .top-nav-brand {
@@ -80,6 +81,7 @@
       display: flex;
       gap: 16px;
       font-size: 0.85rem;
+      align-items: center;
     }
     .top-nav-links a {
       color: var(--text-muted);
@@ -89,10 +91,28 @@
     .top-nav-links a:hover {
       color: var(--accent-clay);
     }
+    .sound-toggle-btn {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      border-radius: 4px;
+      padding: 3px 8px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s;
+    }
+    .sound-toggle-btn.active {
+      background: var(--accent-clay-bg);
+      color: var(--accent-clay);
+      border-color: var(--accent-clay);
+    }
 
     /* Hero Section */
     .hero {
-      margin-bottom: 48px;
+      margin-bottom: 40px;
     }
     .badge-label {
       display: inline-block;
@@ -108,52 +128,170 @@
     }
     h1 {
       font-family: var(--font-serif);
-      font-size: 3.2rem;
-      line-height: 1.1;
+      font-size: 3.3rem;
+      line-height: 1.08;
       font-weight: 400;
       letter-spacing: -0.01em;
       color: var(--text-main);
-      margin-bottom: 18px;
+      margin-bottom: 16px;
     }
     .hero-lead {
-      font-size: 1.16rem;
+      font-size: 1.15rem;
       color: var(--text-muted);
       line-height: 1.6;
-      max-width: 840px;
-      margin-bottom: 28px;
+      max-width: 860px;
+      margin-bottom: 24px;
     }
 
     .spec-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 14px;
+      gap: 12px;
       background: var(--bg-surface);
       border: 1px solid var(--border-light);
       border-radius: 8px;
-      padding: 20px 24px;
+      padding: 18px 22px;
+      margin-bottom: 28px;
     }
     .spec-item-label {
-      font-size: 0.72rem;
+      font-size: 0.7rem;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.05em;
       color: var(--text-soft);
-      margin-bottom: 4px;
+      margin-bottom: 3px;
     }
     .spec-item-val {
       font-family: var(--font-mono);
-      font-size: 0.88rem;
+      font-size: 0.86rem;
       font-weight: 700;
       color: var(--text-main);
     }
 
+    /* HERO SHOWCASE: Interactive Neural Tokenizer & Vector Dispersal Streamer */
+    .tokenizer-showcase {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: 10px;
+      padding: 22px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 40px;
+    }
+    .tokenizer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .tokenizer-title {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .benchmark-pills {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .bm-pill {
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+      padding: 3px 9px;
+      border-radius: 4px;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: all 0.2s;
+    }
+    .bm-pill:hover, .bm-pill.active {
+      background: var(--accent-clay-bg);
+      border-color: var(--accent-clay);
+      color: var(--accent-clay);
+      font-weight: 600;
+    }
+
+    /* Live Token Flow Strip */
+    .tokens-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 12px;
+      background: var(--bg-subtle);
+      border-radius: 6px;
+      border: 1px solid var(--border-light);
+      min-height: 52px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .token-chip {
+      background: #ffffff;
+      border: 1px solid var(--border-dark);
+      padding: 4px 9px;
+      border-radius: 5px;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-main);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      animation: tokenPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+    }
+    @keyframes tokenPop {
+      0% { transform: scale(0.6) translateY(8px); opacity: 0; }
+      100% { transform: scale(1) translateY(0); opacity: 1; }
+    }
+    .token-id {
+      font-size: 0.65rem;
+      color: var(--accent-clay);
+      background: var(--accent-clay-bg);
+      padding: 1px 4px;
+      border-radius: 3px;
+    }
+
+    /* 384D Vector Matrix Stream Bar */
+    .vector-stream-bar {
+      background: #141312;
+      border-radius: 6px;
+      padding: 12px 14px;
+      color: #faf9f5;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      overflow-x: auto;
+    }
+    .vector-stream-numbers {
+      display: flex;
+      gap: 8px;
+      white-space: nowrap;
+      overflow: hidden;
+      position: relative;
+    }
+    .vec-val {
+      transition: all 0.2s;
+    }
+    .vec-val.pos { color: #f28b72; }
+    .vec-val.neg { color: #9bb0be; }
+
     /* Headings & Content */
     h2 {
       font-family: var(--font-serif);
-      font-size: 2.1rem;
+      font-size: 2.15rem;
       font-weight: 400;
       color: var(--text-main);
-      margin: 54px 0 18px 0;
+      margin: 52px 0 16px 0;
       padding-bottom: 10px;
       border-bottom: 1px solid var(--border-light);
       display: flex;
@@ -167,9 +305,9 @@
       margin-right: 8px;
     }
     h3 {
-      font-size: 1.12rem;
+      font-size: 1.1rem;
       font-weight: 600;
-      margin: 24px 0 10px 0;
+      margin: 22px 0 10px 0;
       color: var(--text-main);
     }
     p {
@@ -183,8 +321,8 @@
       background: var(--bg-surface);
       border: 1px solid var(--border-light);
       border-radius: 8px;
-      padding: 24px;
-      margin-bottom: 24px;
+      padding: 22px;
+      margin-bottom: 20px;
       transition: border-color 0.2s;
     }
     .qa-card:hover {
@@ -192,41 +330,65 @@
     }
     .qa-question {
       font-family: var(--font-serif);
-      font-size: 1.5rem;
+      font-size: 1.45rem;
       font-weight: 400;
       color: var(--accent-clay);
-      margin-bottom: 14px;
+      margin-bottom: 12px;
       line-height: 1.3;
     }
     .decision-badge {
       display: inline-block;
       font-family: var(--font-mono);
-      font-size: 0.74rem;
+      font-size: 0.72rem;
       font-weight: 600;
       padding: 2px 8px;
       border-radius: 4px;
       background: var(--bg-subtle);
       color: var(--text-main);
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       border: 1px solid var(--border-light);
     }
 
-    /* Books Library Grid */
+    /* Books Library Grid with 3D Mouse Tilt */
     .books-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 14px;
       margin: 20px 0;
+      perspective: 1200px;
     }
     .book-card {
       background: var(--bg-surface);
       border: 1px solid var(--border-light);
+      border-left: 5px solid var(--accent-clay);
       border-radius: 8px;
-      padding: 16px;
+      padding: 16px 18px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       gap: 8px;
+      transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.2s, border-color 0.2s;
+      cursor: pointer;
+      position: relative;
+      transform-style: preserve-3d;
+      user-select: none;
+    }
+    .book-card:hover {
+      box-shadow: 0 12px 28px rgba(0,0,0,0.07);
+      border-color: var(--border-dark);
+    }
+    .book-card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      border-radius: 7px;
+      pointer-events: none;
+      background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,255,255,0.4) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .book-card:hover::after {
+      opacity: 1;
     }
     .book-title {
       font-weight: 600;
@@ -251,12 +413,367 @@
       color: var(--accent-clay);
     }
 
+    /* Modal / Drawer for Book Details */
+    .book-modal-backdrop {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .book-modal-card {
+      background: #ffffff;
+      max-width: 540px;
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid var(--border-light);
+      padding: 28px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+      animation: modalSlide 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes modalSlide {
+      from { transform: translateY(16px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* SVG Circuit Diagram Canvas Area */
+    .circuit-showcase {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: 10px;
+      padding: 24px;
+      margin: 28px 0;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+    }
+    .circuit-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .circuit-h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .pulse-meter {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--accent-clay);
+      background: var(--accent-clay-bg);
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-weight: 600;
+    }
+
+    .svg-flow-container {
+      width: 100%;
+      height: 220px;
+      background: var(--bg-canvas);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .circuit-svg {
+      width: 100%;
+      height: 100%;
+    }
+    .flow-line {
+      stroke: var(--border-dark);
+      stroke-width: 2;
+      fill: none;
+      stroke-dasharray: 6 6;
+      animation: dashMove 20s linear infinite;
+    }
+    @keyframes dashMove {
+      to { stroke-dashoffset: -1000; }
+    }
+    .node-box {
+      fill: #ffffff;
+      stroke: var(--border-dark);
+      stroke-width: 1.5;
+      rx: 6;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+    .node-box:hover, .node-box.active {
+      stroke: var(--accent-clay);
+      stroke-width: 2.5;
+      fill: #fff9f6;
+    }
+    .node-text {
+      font-family: var(--font-sans);
+      font-size: 10px;
+      font-weight: 600;
+      fill: var(--text-main);
+      text-anchor: middle;
+      pointer-events: none;
+    }
+    .node-subtext {
+      font-family: var(--font-mono);
+      font-size: 8px;
+      fill: var(--text-muted);
+      text-anchor: middle;
+      pointer-events: none;
+    }
+    .travel-packet {
+      fill: var(--accent-clay);
+      r: 5;
+      filter: drop-shadow(0 0 5px rgba(194, 89, 63, 0.9));
+    }
+
+    /* 2D Vector Radar Interactive Nebula */
+    .vector-radar-panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: 10px;
+      padding: 22px;
+      margin: 28px 0;
+    }
+    .radar-canvas-container {
+      position: relative;
+      width: 100%;
+      height: 310px;
+      background: #131211;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-top: 14px;
+      cursor: crosshair;
+    }
+    #vectorCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .radar-hud-tag {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: #faf9f5;
+      background: rgba(0,0,0,0.65);
+      padding: 4px 10px;
+      border-radius: 4px;
+      border: 1px solid rgba(255,255,255,0.15);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      pointer-events: none;
+    }
+    .radar-actions-bar {
+      position: absolute;
+      bottom: 12px;
+      left: 12px;
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .radar-warp-btn {
+      background: rgba(0,0,0,0.7);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #faf9f5;
+      font-size: 0.68rem;
+      font-family: var(--font-mono);
+      padding: 3px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .radar-warp-btn:hover {
+      background: var(--accent-clay);
+      border-color: var(--accent-clay);
+    }
+    .radar-legend {
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      display: flex;
+      gap: 10px;
+      background: rgba(0,0,0,0.7);
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: #faf9f5;
+      pointer-events: none;
+    }
+    .legend-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 4px;
+    }
+
+    /* Floating Tooltip over canvas points */
+    .canvas-tooltip {
+      position: absolute;
+      background: rgba(20, 19, 18, 0.92);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #faf9f5;
+      padding: 6px 10px;
+      border-radius: 5px;
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      pointer-events: none;
+      display: none;
+      z-index: 10;
+      max-width: 260px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    }
+
+    /* SHOWCASE 3B: Interactive RRF Fusion Physics Sandbox */
+    .rrf-sandbox-panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-light);
+      border-radius: 10px;
+      padding: 24px;
+      margin: 28px 0;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+    }
+    .rrf-controls-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 16px 0 22px 0;
+      padding: 14px 18px;
+      background: var(--bg-subtle);
+      border-radius: 8px;
+      border: 1px solid var(--border-light);
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .k-slider-box {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex: 1;
+      min-width: 260px;
+    }
+    .k-slider-box input[type="range"] {
+      flex: 1;
+      accent-color: var(--accent-clay);
+      cursor: pointer;
+    }
+    .k-val-badge {
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--accent-clay);
+      background: #ffffff;
+      padding: 3px 10px;
+      border-radius: 4px;
+      border: 1px solid var(--border-dark);
+      min-width: 64px;
+      text-align: center;
+    }
+    .k-preset-btn {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      padding: 3px 8px;
+      border-radius: 4px;
+      border: 1px solid var(--border-dark);
+      background: #ffffff;
+      cursor: pointer;
+      color: var(--text-main);
+      transition: all 0.2s;
+    }
+    .k-preset-btn.active, .k-preset-btn:hover {
+      background: var(--accent-clay);
+      color: #fff;
+      border-color: var(--accent-clay);
+    }
+
+    /* RRF Cards Container */
+    .rrf-cards-container {
+      position: relative;
+      height: 380px;
+      margin-top: 10px;
+    }
+    .rrf-rank-card {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 56px;
+      background: #ffffff;
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s, border-color 0.3s;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+    }
+    .rrf-rank-card.promoted {
+      border-left: 4px solid var(--accent-olive);
+    }
+    .rrf-rank-card.dense-top {
+      border-left: 4px solid var(--accent-clay);
+    }
+    .card-left-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .card-rank-num {
+      font-family: var(--font-mono);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--accent-clay);
+      min-width: 32px;
+    }
+    .card-title-text {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+    .card-snippet-text {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 360px;
+    }
+    .card-scores-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+    }
+    .score-chip {
+      padding: 3px 7px;
+      border-radius: 4px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-light);
+    }
+    .rrf-total-chip {
+      background: var(--accent-clay-bg);
+      color: var(--accent-clay);
+      font-weight: 700;
+      border: 1px solid rgba(194, 89, 63, 0.25);
+    }
+
     /* Simulation Showcase Area */
     .simulation-panel {
       background: var(--bg-surface);
       border: 1px solid var(--border-light);
       border-radius: 10px;
-      padding: 28px;
+      padding: 26px;
       margin: 28px 0;
       box-shadow: 0 2px 10px rgba(0,0,0,0.03);
     }
@@ -268,7 +785,7 @@
       gap: 16px;
       padding-bottom: 20px;
       border-bottom: 1px solid var(--border-light);
-      margin-bottom: 24px;
+      margin-bottom: 22px;
     }
     .sim-query-input-box {
       flex: 1;
@@ -284,7 +801,7 @@
     }
     .sim-query-display {
       font-family: var(--font-mono);
-      font-size: 0.95rem;
+      font-size: 0.92rem;
       font-weight: 600;
       color: var(--accent-clay);
       background: var(--bg-code);
@@ -408,7 +925,7 @@
       color: #2b2825;
     }
 
-    /* Final Output Bubble */
+    /* Final Answer Preview with Token Typewriter */
     .final-answer-preview {
       background: #ffffff;
       border: 1px solid var(--border-light);
@@ -416,6 +933,7 @@
       border-radius: 8px;
       padding: 20px;
       margin-top: 20px;
+      animation: fadeIn 0.3s ease-out;
     }
     .final-answer-header {
       font-size: 0.78rem;
@@ -427,6 +945,19 @@
       display: flex;
       justify-content: space-between;
     }
+    .typewriter-cursor {
+      display: inline-block;
+      width: 6px;
+      height: 14px;
+      background: var(--accent-clay);
+      margin-left: 3px;
+      animation: blink 0.8s infinite;
+      vertical-align: middle;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
 
     /* Table Styles */
     .table-container {
@@ -434,7 +965,7 @@
       background: #ffffff;
       border: 1px solid var(--border-light);
       border-radius: 8px;
-      overflow: hidden;
+      overflow-x: auto;
     }
     table {
       width: 100%;
@@ -468,7 +999,8 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      flex-wrap: gap;
+      flex-wrap: wrap;
+      gap: 12px;
     }
     .footer a {
       color: var(--accent-clay);
@@ -486,11 +1018,15 @@
         <span class="top-nav-tag">Architecture & Blueprint</span>
       </div>
       <div class="top-nav-links">
-        <a href="#architecture">Architecture Decisions</a>
-        <a href="#corpus">Corpus Library</a>
-        <a href="#simulation">Backend Simulator</a>
-        <a href="case_study_rrf_retrieval.html">Case Study Document ↗</a>
-        <a href="https://github.com/Rudra-P11/techbook-rag" target="_blank">GitHub Repo ↗</a>
+        <a href="#architecture">Decisions</a>
+        <a href="#corpus">Corpus</a>
+        <a href="#circuit">Circuit</a>
+        <a href="#rrf-sandbox">RRF Sandbox</a>
+        <a href="#simulation">Simulator</a>
+        <a href="case_study_rrf_retrieval.html">Case Study ↗</a>
+        <button class="sound-toggle-btn" id="soundToggleBtn" onclick="toggleAudio()" title="Toggle tactile acoustic feedback">
+          <span>🔊</span> <span id="soundLabel">Audio: On</span>
+        </button>
       </div>
     </nav>
 
@@ -521,11 +1057,46 @@
         </div>
         <div>
           <div class="spec-item-label">Warm Retrieval SLA</div>
-          <div class="spec-item-val" style="color: var(--accent-olive);">< 80 ms (Tested ~68 ms)</div>
+          <div class="spec-item-val" style="color: var(--accent-olive);">&lt; 80 ms (Tested ~68 ms)</div>
         </div>
         <div>
           <div class="spec-item-label">Total End-to-End SLA</div>
           <div class="spec-item-val">1.2 – 2.8 s (OpenAI gpt-4o-mini)</div>
+        </div>
+      </div>
+
+      <!-- HERO INTERACTIVE SHOWCASE: Live Query Tokenizer & Vector Streamer -->
+      <div class="tokenizer-showcase">
+        <div class="tokenizer-header">
+          <div class="tokenizer-title">
+            <span>⚡ Interactive Query Tokenizer & Vector Dispersal Streamer</span>
+          </div>
+          <div class="benchmark-pills">
+            <span style="font-size: 0.7rem; color: var(--text-soft); align-self: center; margin-right: 4px;">Benchmarks:</span>
+            <button class="bm-pill active" onclick="loadBenchmarkScenario(0)">1. Deep Learning</button>
+            <button class="bm-pill" onclick="loadBenchmarkScenario(1)">2. SQL B-Tree</button>
+            <button class="bm-pill" onclick="loadBenchmarkScenario(2)">3. Python GIL</button>
+          </div>
+        </div>
+
+        <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px;">
+          Dynamic Token Breakdown (WordPiece / Byte-Pair Tokenization):
+        </div>
+        <div class="tokens-container" id="tokenStreamContainer">
+          <!-- Populated by JS -->
+        </div>
+
+        <div class="vector-stream-bar">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="color: var(--accent-clay); font-weight: 700;">BAAI/bge-small 384d:</span>
+            <span style="color: #8c867e;">||v||₂ = 1.0000</span>
+          </div>
+          <div class="vector-stream-numbers" id="vectorStreamNumbers">
+            <!-- Animated 384d floating point numbers stream -->
+          </div>
+          <button class="radar-warp-btn" onclick="fireQueryPulse()" style="background: var(--accent-clay); border: none;">
+            Fire Into Pipeline ↗
+          </button>
         </div>
       </div>
     </header>
@@ -614,7 +1185,7 @@
           Dense embeddings produce cosine similarity scores bounded in $[0, 1]$, whereas BM25 Okapi produces unbounded frequency scores in $[0, \infty)$. Linear weighted sum ($\alpha \cdot \text{Dense} + (1-\alpha) \cdot \text{BM25}$) fails because score scales shift wildly between short and long queries.
         </p>
         <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0;">
-          <strong>RRF eliminates score normalization vulnerabilities:</strong> It operates strictly over ordinal positions: $\text{RRF}(d) = \sum \frac{1}{60 + \text{Rank}_m(d)}$. As proven in our empirical case study, this allows BM25 to rescue exact terminology matches (like Chunk #4, promoted +16 ranks into the context window) while preventing single-keyword spam from overwhelming semantic relevance.
+          <strong>RRF eliminates score normalization vulnerabilities:</strong> It operates strictly over ordinal positions: $\text{RRF}(d) = \sum \frac{1}{60 + \text{Rank}_m(d)}$. As demonstrated below in our interactive sandbox, this allows BM25 to rescue exact terminology matches (like Chunk #4, promoted +16 ranks into the context window) while preventing single-keyword spam from overwhelming semantic relevance.
         </p>
       </div>
     </section>
@@ -623,93 +1194,258 @@
     <section id="corpus">
       <h2><span class="section-num">02</span> The 11 Technical Books Corpus</h2>
       <p>
-        Our ingestion pipeline processed, cleaned, and indexed 11 authoritative technical textbooks into 2,810 searchable passages across SQL, Python, Systems, and Machine Learning:
+        Our ingestion pipeline processed, cleaned, and indexed 11 authoritative technical textbooks into 2,810 searchable passages. Hover to tilt in 3D perspective or click any tome to inspect its chunk profile:
       </p>
 
-      <div class="books-grid">
-        <div class="book-card">
+      <div class="books-grid" id="booksGrid">
+        <!-- 11 Books with dynamic 3D tilt -->
+        <div class="book-card" onclick="openBookModal(0)">
           <div class="book-title">Deep Learning from Scratch</div>
           <div class="book-meta">
             <span class="subject-pill">Deep Learning</span>
             <span>268 pages • 205 chunks</span>
           </div>
         </div>
-        <div class="book-card">
+        <div class="book-card" onclick="openBookModal(1)">
           <div class="book-title">Packt SQL Query Design Patterns and Best Practices</div>
           <div class="book-meta">
             <span class="subject-pill">SQL & Databases</span>
             <span>270 pages • 169 chunks</span>
           </div>
         </div>
-        <div class="book-card">
+        <div class="book-card" onclick="openBookModal(2)">
           <div class="book-title">Boost Asio C++ Network Programming Cookbook</div>
           <div class="book-meta">
             <span class="subject-pill">Systems & C++</span>
             <span>248 pages • 200 chunks</span>
           </div>
         </div>
-        <div class="book-card">
+        <div class="book-card" onclick="openBookModal(3)">
           <div class="book-title">Financial Theory with Python: A Gentle Introduction</div>
           <div class="book-meta">
             <span class="subject-pill">Python</span>
             <span>204 pages • 145 chunks</span>
           </div>
         </div>
-        <div class="book-card">
+        <div class="book-card" onclick="openBookModal(4)">
           <div class="book-title">Hands-On Machine Learning with C++</div>
           <div class="book-meta">
             <span class="subject-pill">Systems & ML</span>
-            <span>Packt Publishing</span>
+            <span>Packt • 292 chunks</span>
           </div>
         </div>
-        <div class="book-card">
+        <div class="book-card" onclick="openBookModal(5)">
           <div class="book-title">Linear Algebra for Data Science</div>
           <div class="book-meta">
             <span class="subject-pill">Mathematics</span>
             <span>Vector Calculus</span>
           </div>
         </div>
-        <div class="book-card">
+        <div class="book-card" onclick="openBookModal(6)">
           <div class="book-title">AI as a Service: Serverless Machine Learning on AWS</div>
           <div class="book-meta">
-            <span class="subject-pill">Cloud & Architecture</span>
-            <span>Manning</span>
+            <span class="subject-pill">Cloud Architecture</span>
+            <span>Manning • 218 chunks</span>
           </div>
         </div>
-        <div class="book-card">
+        <div class="book-card" onclick="openBookModal(7)">
           <div class="book-title">CRC Data Science: A First Introduction with Python</div>
           <div class="book-meta">
             <span class="subject-pill">Data Science</span>
-            <span>CRC Press</span>
+            <span>CRC Press • 312 chunks</span>
           </div>
         </div>
-        <div class="book-card">
+        <div class="book-card" onclick="openBookModal(8)">
           <div class="book-title">Cryptography and Embedded Systems Security</div>
           <div class="book-meta">
             <span class="subject-pill">Security</span>
-            <span>Springer</span>
+            <span>Springer • 198 chunks</span>
           </div>
         </div>
-        <div class="book-card">
+        <div class="book-card" onclick="openBookModal(9)">
           <div class="book-title">Graph-Powered Analytics and Machine Learning</div>
           <div class="book-meta">
             <span class="subject-pill">Graph Databases</span>
-            <span>TigerGraph</span>
+            <span>TigerGraph • 185 chunks</span>
           </div>
         </div>
-        <div class="book-card">
+        <div class="book-card" onclick="openBookModal(10)">
           <div class="book-title">Python in Finance: Practical Numerical Algorithms</div>
           <div class="book-meta">
             <span class="subject-pill">Python & Finance</span>
-            <span>O'Reilly</span>
+            <span>O'Reilly • 224 chunks</span>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- SECTION 3: INTERACTIVE BACKEND SIMULATION -->
+    <!-- SECTION 3: VISUAL ARCHITECTURE CIRCUIT GRAPH & 2D VECTOR SPACE -->
+    <section id="circuit">
+      <h2><span class="section-num">03</span> Dynamic Circuit Architecture & 2D Vector Nebula</h2>
+      <p>
+        Watch data packets pulse through the dual-branch hybrid retrieval circuit. Below, interactively navigate the 2D vector projection space with live nearest neighbor raycasting:
+      </p>
+
+      <div class="circuit-showcase">
+        <div class="circuit-title-row">
+          <div class="circuit-h3">
+            <span>⚡ Dual-Branch Signal Highway</span>
+          </div>
+          <div class="pulse-meter" id="circuit-status-pill">Parallel Execution: Active</div>
+        </div>
+
+        <div class="svg-flow-container">
+          <svg class="circuit-svg" viewBox="0 0 900 210">
+            <!-- Wire lines -->
+            <path class="flow-line" d="M 80 105 L 170 105" />
+            <path class="flow-line" d="M 270 105 C 310 105, 320 50, 360 50 L 470 50" />
+            <path class="flow-line" d="M 270 105 C 310 105, 320 160, 360 160 L 470 160" />
+            <path class="flow-line" d="M 570 50 C 610 50, 620 105, 660 105" />
+            <path class="flow-line" d="M 570 160 C 610 160, 620 105, 660 105" />
+            <path class="flow-line" d="M 760 105 L 820 105" />
+
+            <!-- Animated Traveling Light Packets -->
+            <circle class="travel-packet" id="packet-1">
+              <animateMotion path="M 80 105 L 170 105" dur="1.2s" repeatCount="indefinite" />
+            </circle>
+            <circle class="travel-packet" id="packet-upper">
+              <animateMotion path="M 270 105 C 310 105, 320 50, 360 50 L 470 50 C 510 50, 520 105, 560 105" dur="1.8s" repeatCount="indefinite" />
+            </circle>
+            <circle class="travel-packet" id="packet-lower" style="fill: var(--accent-olive);">
+              <animateMotion path="M 270 105 C 310 105, 320 160, 360 160 L 470 160 C 510 160, 520 105, 560 105" dur="1.8s" repeatCount="indefinite" />
+            </circle>
+
+            <!-- Nodes (Clickable to jump to stage) -->
+            <g transform="translate(10, 75)" onclick="showStage(1)">
+              <rect class="node-box" width="70" height="60" />
+              <text class="node-text" x="35" y="30">User Query</text>
+              <text class="node-subtext" x="35" y="44">Natural Text</text>
+            </g>
+
+            <g transform="translate(170, 75)" id="node-guardrail" onclick="showStage(1)">
+              <rect class="node-box" width="100" height="60" />
+              <text class="node-text" x="50" y="28">Guardrails</text>
+              <text class="node-subtext" x="50" y="44">&lt; 15ms Filter</text>
+            </g>
+
+            <g transform="translate(360, 20)" id="node-dense" onclick="showStage(2)">
+              <rect class="node-box" width="110" height="60" />
+              <text class="node-text" x="55" y="26">BGE-Small 384d</text>
+              <text class="node-subtext" x="55" y="42">Qdrant HNSW</text>
+            </g>
+
+            <g transform="translate(360, 130)" id="node-bm25" onclick="showStage(3)">
+              <rect class="node-box" width="110" height="60" />
+              <text class="node-text" x="55" y="26">BM25 Okapi</text>
+              <text class="node-subtext" x="55" y="42">2,810 Chunks</text>
+            </g>
+
+            <g transform="translate(560, 75)" id="node-rrf" onclick="showStage(4)">
+              <rect class="node-box" width="100" height="60" style="stroke: var(--accent-clay); fill: #fff7f4;" />
+              <text class="node-text" x="50" y="26" style="fill: var(--accent-clay);">RRF Fusion</text>
+              <text class="node-subtext" x="50" y="42">k = 60 Matrix</text>
+            </g>
+
+            <g transform="translate(690, 75)" id="node-llm" onclick="showStage(7)">
+              <rect class="node-box" width="90" height="60" />
+              <text class="node-text" x="45" y="26">gpt-4o-mini</text>
+              <text class="node-subtext" x="45" y="42">Synthesis</text>
+            </g>
+
+            <g transform="translate(810, 75)" onclick="showStage(8)">
+              <rect class="node-box" width="80" height="60" style="stroke: var(--accent-olive); fill: #f3faf4;" />
+              <text class="node-text" x="40" y="26" style="fill: var(--accent-olive);">Verified Ans</text>
+              <text class="node-subtext" x="40" y="42">pp. Citations</text>
+            </g>
+          </svg>
+        </div>
+
+        <!-- Interactive 2D Vector Nebula Canvas -->
+        <div class="vector-radar-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+            <div style="font-size: 0.92rem; font-weight: 700; color: var(--text-main);">
+              Interactive 2D Semantic Vector Embedding Projection (Draggable Query Vector Q)
+            </div>
+            <button class="btn-run-all" style="padding: 4px 12px; font-size: 0.75rem;" onclick="triggerRadarPulse()">
+              Ping Sonar Radar Wave
+            </button>
+          </div>
+          <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0;">
+            <strong>Drag node Q with your mouse</strong> across the vector field to observe real-time cosine distance raycasting and dynamic nearest neighbor discovery across 2,810 book chunks.
+          </p>
+
+          <div class="radar-canvas-container" id="radarContainer">
+            <canvas id="vectorCanvas"></canvas>
+            <div class="radar-hud-tag">
+              <span id="radarCoordsText">Q Vector: [0.65, 0.45]</span>
+              <span style="color: var(--accent-clay);">• Nearest: Deep Learning</span>
+            </div>
+            <div class="radar-actions-bar">
+              <button class="radar-warp-btn" onclick="warpQueryTo('dl')">Warp: Deep Learning</button>
+              <button class="radar-warp-btn" onclick="warpQueryTo('sql')">Warp: SQL Databases</button>
+              <button class="radar-warp-btn" onclick="warpQueryTo('py')">Warp: Python</button>
+              <button class="radar-warp-btn" onclick="warpQueryTo('sys')">Warp: Systems & C++</button>
+            </div>
+            <div class="radar-legend">
+              <span><span class="legend-dot" style="background: #c2593f;"></span>Deep Learning</span>
+              <span><span class="legend-dot" style="background: #b86e1e;"></span>SQL</span>
+              <span><span class="legend-dot" style="background: #3d7a46;"></span>Python</span>
+              <span><span class="legend-dot" style="background: #4a5c68;"></span>Systems</span>
+            </div>
+            <div class="canvas-tooltip" id="canvasTooltip"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3B: INTERACTIVE RRF FUSION PHYSICS SANDBOX -->
+    <section id="rrf-sandbox">
+      <h2><span class="section-num">04</span> Interactive RRF Fusion Physics Sandbox</h2>
+      <p>
+        Directly test the mathematical mechanics of Reciprocal Rank Fusion: 
+        <code style="font-family: var(--font-mono); background: var(--bg-code); padding: 2px 6px; border-radius: 4px;">RRF Score = 1/(k + DenseRank) + 1/(k + LexicalRank)</code>.
+        Drag the <strong style="color: var(--accent-clay);">k parameter slider</strong> to observe how rank smoothing dynamically swaps and reorders candidate passages in real-time.
+      </p>
+
+      <div class="rrf-sandbox-panel">
+        <div class="rrf-controls-row">
+          <div class="k-slider-box">
+            <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--text-soft);">Smoothing Constant k:</span>
+            <input type="range" id="kSlider" min="1" max="100" value="60" oninput="updateRRFSlider(this.value)">
+            <span class="k-val-badge" id="kValBadge">k = 60</span>
+          </div>
+          <div style="display: flex; gap: 6px; align-items: center;">
+            <span style="font-size: 0.72rem; color: var(--text-soft);">Presets:</span>
+            <button class="k-preset-btn" onclick="setKPreset(1)">k = 1 (Extreme)</button>
+            <button class="k-preset-btn" onclick="setKPreset(10)">k = 10</button>
+            <button class="k-preset-btn active" onclick="setKPreset(60)">k = 60 (Optimal)</button>
+            <button class="k-preset-btn" onclick="setKPreset(100)">k = 100 (Flat)</button>
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--text-soft); padding: 0 16px 8px 16px; border-bottom: 1px solid var(--border-light);">
+          <span>Rank & Evidence Passage</span>
+          <span>Dense ANN • BM25 Lexical • Reciprocal Fusion Score</span>
+        </div>
+
+        <div class="rrf-cards-container" id="rrfCardsContainer">
+          <!-- 6 Dynamic re-ranking cards with FLIP transform -->
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px; padding-top: 14px; border-top: 1px dashed var(--border-dark); font-size: 0.82rem; color: var(--text-muted);">
+          <div>
+            <strong>Key Insight:</strong> At $k=60$, Chunk #4 (Promoted +16) securely enters the LLM prompt window, while keyword spam is prevented from dethroning semantic match #1.
+          </div>
+          <button class="k-preset-btn" onclick="playShuffleDuel()" style="font-weight: 600; padding: 5px 12px; background: var(--accent-clay); color: #fff; border: none;">
+            ▶ Animate Rank Swap Duel
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4: INTERACTIVE BACKEND SIMULATION -->
     <section id="simulation">
-      <h2><span class="section-num">03</span> Interactive Backend Pipeline Simulation</h2>
+      <h2><span class="section-num">05</span> Interactive Backend Pipeline Simulation</h2>
       <p>
         Experience what happens step-by-step when a query enters the FastAPI server. Click <strong>"Run End-to-End Simulation"</strong> to trace the exact execution path across all 8 micro-stages with live latency meters.
       </p>
@@ -717,8 +1453,8 @@
       <div class="simulation-panel">
         <div class="sim-header">
           <div class="sim-query-input-box">
-            <div class="sim-query-label">Active User Query (Case Study Example)</div>
-            <div class="sim-query-display">"What is a forward pass in a neural network?"</div>
+            <div class="sim-query-label">Active Benchmark Scenario</div>
+            <div class="sim-query-display" id="simQueryDisplay">"What is a forward pass in a neural network?"</div>
           </div>
           <button class="btn-run-all" id="btn-run-simulation" onclick="startFullSimulation()">
             <span>▶</span> Run End-to-End Simulation
@@ -727,7 +1463,7 @@
 
         <!-- 8-Stage Step Indicator -->
         <div class="pipeline-stepper" id="stepper">
-          <div class="step-pill" id="step-1" onclick="showStage(1)">
+          <div class="step-pill active" id="step-1" onclick="showStage(1)">
             <span class="step-num">01</span>
             <span class="step-name">Guardrail</span>
           </div>
@@ -777,27 +1513,63 @@ is_allowed, category, msg = domain_guardrail.check_query_safety(query)
           </div>
         </div>
 
-        <!-- Final Answer Preview (reveals on completion) -->
+        <!-- Final Answer Preview (reveals on completion with Typewriter) -->
         <div class="final-answer-preview" id="final-answer-preview" style="display: none;">
           <div class="final-answer-header">
-            <span>Synthesized & Verified Response (Grounded in Deep Learning from Scratch)</span>
-            <span style="font-family: var(--font-mono); color: var(--accent-clay);">Total End-to-End: 1,513 ms</span>
+            <span id="finalAnswerTitle">Synthesized & Verified Response (Grounded in Deep Learning from Scratch)</span>
+            <span style="font-family: var(--font-mono); color: var(--accent-clay);" id="totalLatencyBadge">Total End-to-End: 1,513 ms</span>
           </div>
-          <p style="font-size: 0.93rem; margin-bottom: 12px;">
-            In a neural network, a <strong>forward pass</strong> is the initial computational phase where input data flows sequentially through the network's layers to compute activations and produce predictions [Deep Learning from Scratch, pp. 176-177].
+          <p style="font-size: 0.93rem; margin-bottom: 12px;" id="typewriter-text-1">
+            <!-- Streamed content -->
           </p>
-          <div style="background: var(--bg-canvas); border: 1px solid var(--border-light); border-radius: 6px; padding: 12px; font-family: var(--font-mono); font-size: 0.82rem; margin-bottom: 12px;">
+          <div id="typewriter-code-box" style="display: none; background: var(--bg-canvas); border: 1px solid var(--border-light); border-radius: 6px; padding: 12px; font-family: var(--font-mono); font-size: 0.82rem; margin-bottom: 12px;">
 for layer in self.layers:
     X = layer.forward(X)
 return X
           </div>
-          <p style="font-size: 0.93rem; margin-bottom: 0;">
-            During this pass, each layer computes affine transformations followed by nonlinear activations. This is explicitly contrasted with the <strong>backward pass</strong>, where loss gradients are propagated in the reverse direction using the chain rule [Deep Learning from Scratch, pp. 86-87, 178-179].
+          <p style="font-size: 0.93rem; margin-bottom: 0;" id="typewriter-text-2">
+            <!-- Streamed content -->
           </p>
         </div>
 
       </div>
     </section>
+
+    <!-- Book Details Inspection Modal -->
+    <div class="book-modal-backdrop" id="bookModalBackdrop" onclick="closeBookModal(event)">
+      <div class="book-modal-card" id="bookModalCard">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+          <div>
+            <span class="badge-label" id="modalSubjectBadge" style="margin-bottom: 6px;">Deep Learning</span>
+            <h3 id="modalBookTitle" style="font-size: 1.25rem; margin: 0 0 4px 0;">Deep Learning from Scratch</h3>
+          </div>
+          <button onclick="closeBookModalDirect()" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--text-soft);">✕</button>
+        </div>
+        <p style="font-size: 0.86rem; color: var(--text-muted); margin-bottom: 14px;" id="modalBookDesc">
+          Author: Seth Weidman • Publisher: O'Reilly Media
+        </p>
+        <div class="spec-grid" style="padding: 12px 16px; margin-bottom: 14px;">
+          <div>
+            <div class="spec-item-label">Indexed Chunks</div>
+            <div class="spec-item-val" id="modalChunksVal">205 chunks</div>
+          </div>
+          <div>
+            <div class="spec-item-label">Total Pages</div>
+            <div class="spec-item-val" id="modalPagesVal">268 pages</div>
+          </div>
+          <div>
+            <div class="spec-item-label">Token Density</div>
+            <div class="spec-item-val">684 tok / chunk</div>
+          </div>
+        </div>
+        <div style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-soft); margin-bottom: 6px;">
+          Sample Extracted Passage:
+        </div>
+        <div style="background: var(--bg-code); border: 1px solid var(--border-light); border-radius: 6px; padding: 10px; font-family: var(--font-mono); font-size: 0.78rem; max-height: 120px; overflow-y: auto;" id="modalSnippet">
+          "Figure 6-6. Another order in which data could flow through the same RNN during its forward pass. This all covers how the forward pass through an RNN would work. What about the backward pass?"
+        </div>
+      </div>
+    </div>
 
     <!-- Footer -->
     <footer class="footer">
@@ -810,68 +1582,844 @@ return X
   </div>
 
   <script>
-    // Detailed simulation telemetry definitions
-    const stages = [
+    /* =====================================================================
+       0. AUDIO SYNTHESIZER ENGINE (Web Audio API - Pure Client-side Synthesis)
+       ===================================================================== */
+    let audioCtx = null;
+    let isAudioEnabled = true;
+
+    function initAudio() {
+      if (!audioCtx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (AudioContext) audioCtx = new AudioContext();
+      }
+    }
+
+    function toggleAudio() {
+      isAudioEnabled = !isAudioEnabled;
+      const btn = document.getElementById('soundToggleBtn');
+      const label = document.getElementById('soundLabel');
+      if (isAudioEnabled) {
+        btn.classList.add('active');
+        label.textContent = "Audio: On";
+        playTone(520, 'sine', 0.1);
+      } else {
+        btn.classList.remove('active');
+        label.textContent = "Audio: Muted";
+      }
+    }
+
+    function playTone(freq, type = 'sine', duration = 0.08, vol = 0.04) {
+      if (!isAudioEnabled) return;
+      try {
+        initAudio();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    /* =====================================================================
+       1. BENCHMARK SCENARIOS & TOKENIZER ENGINE
+       ===================================================================== */
+    const benchmarkScenarios = [
       {
-        num: 1,
-        title: "Stage 1: Input Sanitization & Domain Guardrail Defense",
-        latency: "14 ms",
-        desc: "Validates query safety against prompt injections and checks domain scope. Intercepts medical/dangerous queries in 14ms without calling OpenAI.",
-        code: `is_allowed, cat, msg = domain_guardrail.check_query_safety(query)\n# Result: ALLOWED (Scope: Deep Learning & Neural Architectures)\nsanitized_query, flagged = injection_guardrail.sanitize_query(query)`
+        id: 0,
+        cluster: 'dl',
+        name: "Deep Learning",
+        query: "What is a forward pass in a neural network?",
+        tokens: [
+          { text: "What", id: "2054" },
+          { text: "is", id: "2003" },
+          { text: "a", id: "1037" },
+          { text: "forward", id: "2830" },
+          { text: "pass", id: "3413" },
+          { text: "in", id: "1999" },
+          { text: "a", id: "1037" },
+          { text: "neural", id: "15756" },
+          { text: "network?", id: "2897" }
+        ],
+        vectorSample: [-0.0421, 0.0814, 0.0159, -0.0632, 0.1105, -0.0219, 0.0487, -0.0912, 0.0345, 0.0712],
+        stages: [
+          {
+            title: "Stage 1: Input Sanitization & Domain Guardrail Defense",
+            latency: "14 ms",
+            desc: "Validates query safety against prompt injections and technical domain scope. Intercepts non-technical inquiries in 14ms without calling OpenAI.",
+            code: `is_allowed, cat, msg = domain_guardrail.check_query_safety(query)\n# Result: ALLOWED (Scope: Deep Learning & Neural Architectures)\nsanitized_query, flagged = injection_guardrail.sanitize_query(query)`
+          },
+          {
+            title: "Stage 2: Dense Vectorization (BAAI/bge-small-en-v1.5)",
+            latency: "21 ms",
+            desc: "Encodes the query text into a normalized 384-dimensional dense vector using local SentenceTransformer on CPU.",
+            code: `query_vector = embedder.encode(query, normalize_embeddings=True)\n# Shape: (384,) | Tensor Device: CPU\n# Sample Floats: [-0.0421, 0.0814, 0.0159, -0.0632, ...]`
+          },
+          {
+            title: "Stage 3: Parallel Hybrid Retrieval (Qdrant ANN + BM25 Okapi)",
+            latency: "68 ms",
+            desc: "Executes concurrent dense semantic ANN search in Qdrant and lexical keyword matching across all 2,810 book chunks.",
+            code: `# Branch A: Qdrant HNSW Cosine Search -> Top 20 Candidates (Best: 0.8186)\n# Branch B: BM25 Okapi Frequency Search -> Top 20 Candidates (Best: 32.4496)\n# Total Candidates Retrieved: 28 unique chunks`
+          },
+          {
+            title: "Stage 4: Reciprocal Rank Fusion Re-Ranking (k = 60)",
+            latency: "4 ms",
+            desc: "Computes reciprocal rank scores: score = 1/(60 + DenseRank) + 1/(60 + LexicalRank). BM25 rescues Chunk #4, promoting it by +16 positions into the context window.",
+            code: `# Chunk #1: 1/(60+1) + 1/(60+2)  = 0.03252 -> Final Rank #1\n# Chunk #2: 1/(60+11) + 1/(60+3) = 0.02996 -> Final Rank #2\n# Chunk #4: 1/(60+20) + 1/(60+1) = 0.02889 -> Promoted from #20 to #4!`
+          },
+          {
+            title: "Stage 5: Relevance Threshold Guardrail Verification",
+            latency: "2 ms",
+            desc: "Evaluates whether top-ranked candidates meet the minimum cosine similarity threshold (0.38) or non-zero BM25 score. Guarantees abstention on garbage queries.",
+            code: `max_dense = 0.8186 (Threshold: 0.3800)\nis_sufficient = max_dense >= 0.38 or max_lexical > 0\n# Guardrail Status: PASSED (Proceeding to Context Assembly)`
+          },
+          {
+            title: "Stage 6: Grounded Evidence Context Packaging",
+            latency: "5 ms",
+            desc: "Packages top 6 re-ranked chunks with Evidence IDs [E1..E6], filename, and page numbers within a 5,000 token budget.",
+            code: `--- EVIDENCE [E1] ---\nSource: "Deep Learning from Scratch" (Pages: 176, 177)\nContent: "Figure 6-6. Another order in which data could flow during its forward pass..."\n--- EVIDENCE [E5] ---\nContent: "for layer in self.layers: X = layer.forward(X)..."`
+          },
+          {
+            title: "Stage 7: Grounded LLM Generation (OpenAI gpt-4o-mini)",
+            latency: "1,381 ms",
+            desc: "Generates an answer grounded strictly in the provided evidence blocks with zero ungrounded assertions.",
+            code: `client.chat.completions.create(\n    model="gpt-4o-mini",\n    temperature=0.1,\n    messages=[{"role": "system", ...}, {"role": "user", ...}]\n)\n# Output Tokens Generated: 218 tokens`
+          },
+          {
+            title: "Stage 8: Citation Validation & Normalization",
+            latency: "18 ms",
+            desc: "Regex parser verifies every [E*] reference against ground truth evidence, strips hallucinations, and formats inline citations as [Book Title, pp. X-Y].",
+            code: `# Validated [E1] -> [Deep Learning from Scratch, pp. 176-177]\n# Validated [E5] -> [Deep Learning from Scratch, pp. 86-87]\n# Hallucinated citations stripped: 0 | Verification Status: 100% GROUNDED`
+          }
+        ],
+        finalAnswer: {
+          title: "Synthesized & Verified Response (Grounded in Deep Learning from Scratch)",
+          totalLatency: "Total End-to-End: 1,513 ms",
+          p1: "In a neural network, a forward pass is the initial computational phase where input data flows sequentially through the network's layers to compute activations and produce predictions [Deep Learning from Scratch, pp. 176-177].",
+          code: "for layer in self.layers:\n    X = layer.forward(X)\nreturn X",
+          p2: "During this pass, each layer computes affine transformations followed by nonlinear activations. This is explicitly contrasted with the backward pass, where loss gradients are propagated in the reverse direction using the chain rule [Deep Learning from Scratch, pp. 86-87, 178-179]."
+        }
       },
       {
-        num: 2,
-        title: "Stage 2: Dense Vectorization (BAAI/bge-small-en-v1.5)",
-        latency: "21 ms",
-        desc: "Encodes the query text into a normalized 384-dimensional dense vector using local SentenceTransformer on CPU.",
-        code: `query_vector = embedder.encode(query, normalize_embeddings=True)\n# Shape: (384,) | Tensor Device: CPU\n# Sample Floats: [-0.0421, 0.0814, 0.0159, -0.0632, ...]`
+        id: 1,
+        cluster: 'sql',
+        name: "SQL Databases",
+        query: "How does B-Tree indexing optimize SQL range queries?",
+        tokens: [
+          { text: "How", id: "2129" },
+          { text: "does", id: "2515" },
+          { text: "B-Tree", id: "1042" },
+          { text: "indexing", id: "8841" },
+          { text: "optimize", id: "9820" },
+          { text: "SQL", id: "5421" },
+          { text: "range", id: "2846" },
+          { text: "queries?", id: "14820" }
+        ],
+        vectorSample: [0.0921, -0.0418, 0.0715, 0.1241, -0.0512, 0.0883, -0.0124, 0.0632, -0.0741, 0.0219],
+        stages: [
+          {
+            title: "Stage 1: Input Sanitization & Domain Guardrail Defense",
+            latency: "12 ms",
+            desc: "Validates SQL optimization query against database schema and injection rules. Category classified as Systems/Databases.",
+            code: `is_allowed, cat, msg = domain_guardrail.check_query_safety(query)\n# Result: ALLOWED (Scope: Relational Databases & Index Architecture)`
+          },
+          {
+            title: "Stage 2: Dense Vectorization (BAAI/bge-small-en-v1.5)",
+            latency: "19 ms",
+            desc: "Encodes database query into 384d semantic vector aligned with SQL data structures cluster.",
+            code: `query_vector = embedder.encode(query, normalize_embeddings=True)\n# Shape: (384,) | Device: CPU\n# Sample Floats: [0.0921, -0.0418, 0.0715, 0.1241, ...]`
+          },
+          {
+            title: "Stage 3: Parallel Hybrid Retrieval (Qdrant ANN + BM25 Okapi)",
+            latency: "62 ms",
+            desc: "Retrieves top 20 B-Tree passages from Packt SQL Query Design Patterns via Qdrant HNSW and BM25 token frequencies.",
+            code: `# Branch A: Qdrant Cosine Similarity -> Top Match: 0.8412\n# Branch B: BM25 Lexical Score -> Top Match: 34.1820`
+          },
+          {
+            title: "Stage 4: Reciprocal Rank Fusion Re-Ranking (k = 60)",
+            latency: "3 ms",
+            desc: "Combines B-Tree leaf node traversal passages into unified rank slots.",
+            code: `# Chunk #1 (Packt SQL pp. 84-86): 1/(60+1) + 1/(60+1) = 0.03278 -> Rank #1`
+          },
+          {
+            title: "Stage 5: Relevance Threshold Guardrail Verification",
+            latency: "2 ms",
+            desc: "Relevance score 0.8412 exceeds 0.38 baseline. Context assembly approved.",
+            code: `max_dense = 0.8412 (Threshold: 0.3800) -> Status: PASSED`
+          },
+          {
+            title: "Stage 6: Grounded Evidence Context Packaging",
+            latency: "4 ms",
+            desc: "Packaged 4 high-affinity chunks on clustered B-Tree leaf pointers.",
+            code: `--- EVIDENCE [E1] ---\nSource: "SQL Query Design Patterns and Best Practices" (pp. 84-86)\nContent: "B-Tree indexes maintain sorted leaf nodes connected by bi-directional linked lists..."`
+          },
+          {
+            title: "Stage 7: Grounded LLM Generation (OpenAI gpt-4o-mini)",
+            latency: "1,412 ms",
+            desc: "Generates step-by-step breakdown of root-to-leaf search followed by sequential horizontal leaf scans.",
+            code: `client.chat.completions.create(model="gpt-4o-mini", temperature=0.1)`
+          },
+          {
+            title: "Stage 8: Citation Validation & Normalization",
+            latency: "16 ms",
+            desc: "Normalizes references to Packt SQL Query Design Patterns.",
+            code: `# Validated [E1] -> [Packt SQL Query Design Patterns, pp. 84-86]`
+          }
+        ],
+        finalAnswer: {
+          title: "Synthesized & Verified Response (Grounded in Packt SQL Query Design Patterns)",
+          totalLatency: "Total End-to-End: 1,530 ms",
+          p1: "B-Tree indexes accelerate range queries (e.g. WHERE date BETWEEN x AND y) through two structural properties: balanced hierarchical search and horizontally linked leaf nodes [Packt SQL Query Design Patterns, pp. 84-86].",
+          code: "-- B-Tree Index Range Seek\nSELECT order_id, total FROM orders\nWHERE created_at >= '2026-01-01' AND created_at < '2026-02-01';",
+          p2: "The database first traverses the tree in O(log N) operations to locate the lower bound leaf node. Once reached, it executes a sequential linear traversal along the bi-directional linked list of leaf pages until the upper bound is hit, avoiding expensive table scans [Packt SQL Query Design Patterns, pp. 87-89]."
+        }
       },
       {
-        num: 3,
-        title: "Stage 3: Parallel Hybrid Retrieval (Qdrant ANN + BM25 Okapi)",
-        latency: "68 ms",
-        desc: "Executes concurrent dense semantic ANN search in Qdrant and lexical keyword matching across all 2,810 book chunks.",
-        code: `# Branch A: Qdrant HNSW Cosine Search -> Top 20 Candidates (Best: 0.8186)\n# Branch B: BM25 Okapi Frequency Search -> Top 20 Candidates (Best: 32.4496)\n# Total Candidates Retrieved: 28 unique chunks`
-      },
-      {
-        num: 4,
-        title: "Stage 4: Reciprocal Rank Fusion Re-Ranking (k = 60)",
-        latency: "4 ms",
-        desc: "Computes reciprocal rank scores: score = 1/(60 + DenseRank) + 1/(60 + LexicalRank). BM25 rescues Chunk #4, promoting it by +16 positions into the context window.",
-        code: `# Chunk #1: 1/(60+1) + 1/(60+2)  = 0.03252 -> Final Rank #1\n# Chunk #2: 1/(60+11) + 1/(60+3) = 0.02996 -> Final Rank #2\n# Chunk #4: 1/(60+20) + 1/(60+1) = 0.02889 -> Promoted from #20 to #4!`
-      },
-      {
-        num: 5,
-        title: "Stage 5: Relevance Threshold Guardrail Verification",
-        latency: "2 ms",
-        desc: "Evaluates whether top-ranked candidates meet the minimum cosine similarity threshold (0.38) or non-zero BM25 score. Guarantees abstention on garbage queries.",
-        code: `max_dense = 0.8186 (Threshold: 0.3800)\nis_sufficient = max_dense >= 0.38 or max_lexical > 0\n# Guardrail Status: PASSED (Proceeding to Context Assembly)`
-      },
-      {
-        num: 6,
-        title: "Stage 6: Grounded Evidence Context Packaging",
-        latency: "5 ms",
-        desc: "Packages top 6 re-ranked chunks with Evidence IDs [E1..E6], filename, and page numbers within a 5,000 token budget.",
-        code: `--- EVIDENCE [E1] ---\nSource: "Deep Learning from Scratch" (Pages: 176, 177)\nContent: "Figure 6-6. Another order in which data could flow during its forward pass..."\n--- EVIDENCE [E5] ---\nContent: "for layer in self.layers: X = layer.forward(X)..."`
-      },
-      {
-        num: 7,
-        title: "Stage 7: Grounded LLM Generation (OpenAI gpt-4o-mini)",
-        latency: "1,381 ms",
-        desc: "Generates an answer grounded strictly in the provided evidence blocks with zero ungrounded assertions.",
-        code: `client.chat.completions.create(\n    model="gpt-4o-mini",\n    temperature=0.1,\n    messages=[{"role": "system", ...}, {"role": "user", ...}]\n)\n# Output Tokens Generated: 218 tokens`
-      },
-      {
-        num: 8,
-        title: "Stage 8: Citation Validation & Normalization",
-        latency: "18 ms",
-        desc: "Regex parser verifies every [E*] reference against ground truth evidence, strips hallucinations, and formats inline citations as [Book Title, pp. X-Y].",
-        code: `# Validated [E1] -> [Deep Learning from Scratch, pp. 176-177]\n# Validated [E5] -> [Deep Learning from Scratch, pp. 86-87]\n# Hallucinated citations stripped: 0 | Verification Status: 100% GROUNDED`
+        id: 2,
+        cluster: 'py',
+        name: "Python GIL",
+        query: "How does Python's GIL impact multithreaded CPU execution?",
+        tokens: [
+          { text: "How", id: "2129" },
+          { text: "does", id: "2515" },
+          { text: "Python's", id: "18550" },
+          { text: "GIL", id: "9832" },
+          { text: "impact", id: "4520" },
+          { text: "multithreaded", id: "28412" },
+          { text: "CPU", id: "6840" },
+          { text: "execution?", id: "12310" }
+        ],
+        vectorSample: [-0.0128, 0.1142, -0.0718, 0.0521, 0.0814, -0.0932, 0.0381, 0.0419, -0.0621, 0.0854],
+        stages: [
+          {
+            title: "Stage 1: Input Sanitization & Domain Guardrail Defense",
+            latency: "11 ms",
+            desc: "Sanitizes GIL architecture query. Domain matches Python systems programming.",
+            code: `is_allowed, cat, msg = domain_guardrail.check_query_safety(query)\n# Result: ALLOWED (Scope: Python Runtime Internals)`
+          },
+          {
+            title: "Stage 2: Dense Vectorization (BAAI/bge-small-en-v1.5)",
+            latency: "18 ms",
+            desc: "Generates 384d embedding in Python execution models cluster.",
+            code: `query_vector = embedder.encode(query, normalize_embeddings=True)`
+          },
+          {
+            title: "Stage 3: Parallel Hybrid Retrieval (Qdrant ANN + BM25 Okapi)",
+            latency: "65 ms",
+            desc: "Retrieves mutex contention passages from Financial Theory with Python and Python Numerical Algorithms.",
+            code: `# Branch A: Qdrant Cosine -> 0.8291\n# Branch B: BM25 Okapi -> 31.7890`
+          },
+          {
+            title: "Stage 4: Reciprocal Rank Fusion Re-Ranking (k = 60)",
+            latency: "4 ms",
+            desc: "Fuses GIL mutex lock and CPython threading chunks.",
+            code: `# Chunk #1 (Python in Finance pp. 112-114): Final Rank #1 (rrf: 0.0322)`
+          },
+          {
+            title: "Stage 5: Relevance Threshold Guardrail Verification",
+            latency: "2 ms",
+            desc: "Cosine similarity 0.8291 easily exceeds threshold.",
+            code: `max_dense = 0.8291 (Threshold: 0.3800) -> Status: PASSED`
+          },
+          {
+            title: "Stage 6: Grounded Evidence Context Packaging",
+            latency: "5 ms",
+            desc: "Packages 5 excerpts explaining CPython thread locks and multiprocessing solutions.",
+            code: `--- EVIDENCE [E1] ---\nSource: "Python in Finance: Practical Numerical Algorithms" (pp. 112-114)\nContent: "The Global Interpreter Lock prevents multiple native threads from executing Python bytecodes concurrently..."`
+          },
+          {
+            title: "Stage 7: Grounded LLM Generation (OpenAI gpt-4o-mini)",
+            latency: "1,390 ms",
+            desc: "Synthesizes explanation of CPU-bound vs I/O-bound concurrency.",
+            code: `client.chat.completions.create(model="gpt-4o-mini", temperature=0.1)`
+          },
+          {
+            title: "Stage 8: Citation Validation & Normalization",
+            latency: "17 ms",
+            desc: "Validates citations against Python in Finance.",
+            code: `# Validated [E1] -> [Python in Finance: Practical Numerical Algorithms, pp. 112-114]`
+          }
+        ],
+        finalAnswer: {
+          title: "Synthesized & Verified Response (Grounded in Python in Finance)",
+          totalLatency: "Total End-to-End: 1,507 ms",
+          p1: "In CPython, the Global Interpreter Lock (GIL) is a mutual-exclusion lock designed to ensure thread safety when managing reference counting in Python's memory manager [Python in Finance, pp. 112-114].",
+          code: "# Multiprocessing bypasses the GIL across multi-core CPUs\nfrom multiprocessing import Pool\nwith Pool() as p:\n    results = p.map(cpu_bound_task, data_chunks)",
+          p2: "Because the GIL permits only one thread to execute Python bytecode at any given instant, multithreaded CPU-bound tasks incur thread contention overhead and execute slower than single-threaded implementations. For CPU parallelism, developers must rely on multiprocessing or C extensions like NumPy [Python in Finance, pp. 115-117]."
+        }
       }
     ];
 
+    let currentScenarioIdx = 0;
+
+    function loadBenchmarkScenario(idx) {
+      currentScenarioIdx = idx;
+      const sc = benchmarkScenarios[idx];
+      playTone(440 + idx * 80, 'sine', 0.1);
+
+      // Update benchmark pills
+      document.querySelectorAll('.bm-pill').forEach((btn, i) => {
+        btn.classList.toggle('active', i === idx);
+      });
+
+      // Render tokens
+      const tokenContainer = document.getElementById('tokenStreamContainer');
+      tokenContainer.innerHTML = '';
+      sc.tokens.forEach((t, i) => {
+        const chip = document.createElement('div');
+        chip.className = 'token-chip';
+        chip.style.animationDelay = (i * 0.04) + 's';
+        chip.innerHTML = `<span>${t.text}</span><span class="token-id">#${t.id}</span>`;
+        tokenContainer.appendChild(chip);
+      });
+
+      // Render vector stream numbers
+      const numContainer = document.getElementById('vectorStreamNumbers');
+      numContainer.innerHTML = '';
+      sc.vectorSample.forEach((val, i) => {
+        const span = document.createElement('span');
+        span.className = 'vec-val ' + (val >= 0 ? 'pos' : 'neg');
+        span.textContent = (val >= 0 ? '+' : '') + val.toFixed(4);
+        numContainer.appendChild(span);
+      });
+
+      // Update simulator query display
+      document.getElementById('simQueryDisplay').textContent = `"${sc.query}"`;
+      document.getElementById('final-answer-preview').style.display = 'none';
+
+      // Move canvas query vector to cluster
+      warpQueryTo(sc.cluster);
+
+      // Update active stage display
+      showStage(1);
+    }
+
+    function fireQueryPulse() {
+      playTone(680, 'triangle', 0.15, 0.06);
+      triggerRadarPulse();
+      // Scroll smoothly down to circuit
+      document.getElementById('circuit').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    /* =====================================================================
+       2. 3D BOOK TILT & MODAL INSPECTION
+       ===================================================================== */
+    const bookCatalogData = [
+      {
+        title: "Deep Learning from Scratch",
+        subject: "Deep Learning",
+        author: "Seth Weidman (O'Reilly Media)",
+        pages: "268 pages",
+        chunks: "205 chunks",
+        desc: "Building neural networks from first principles using NumPy, covering forward and backward passes, RNNs, and CNNs.",
+        snippet: "Figure 6-6. Another order in which data could flow through the same RNN during its forward pass. What about the backward pass? Backpropagation through recurrent neural networks..."
+      },
+      {
+        title: "Packt SQL Query Design Patterns and Best Practices",
+        subject: "SQL & Databases",
+        author: "Markus Winand / Packt Publishing",
+        pages: "270 pages",
+        chunks: "169 chunks",
+        desc: "Deep dive into query execution plans, B-Tree index structure, CTE recursive queries, and window partitioning.",
+        snippet: "B-Tree indexes maintain leaf pages connected via doubly linked lists, enabling O(log N) seeks followed by sequential scans."
+      },
+      {
+        title: "Boost Asio C++ Network Programming Cookbook",
+        subject: "Systems & C++",
+        author: "Dmytro Radchuk (Packt)",
+        pages: "248 pages",
+        chunks: "200 chunks",
+        desc: "Asynchronous I/O architecture, reactor patterns, thread pools, and zero-copy packet buffers in modern C++.",
+        snippet: "The io_context object coordinates asynchronous kernel notifications via epoll/kqueue event demultiplexers."
+      },
+      {
+        title: "Financial Theory with Python: A Gentle Introduction",
+        subject: "Python",
+        author: "Yves Hilpisch (O'Reilly)",
+        pages: "204 pages",
+        chunks: "145 chunks",
+        desc: "Mathematical finance, portfolio optimization, Black-Scholes valuation, and vectorized NumPy array pipelines.",
+        snippet: "Vectorized array calculations avoid Python bytecode interpreter overhead by delegating loops directly to contiguous C memory."
+      },
+      {
+        title: "Hands-On Machine Learning with C++",
+        subject: "Systems & ML",
+        author: "Kirill Kolodiazhnyi (Packt)",
+        pages: "382 pages",
+        chunks: "292 chunks",
+        desc: "Deploying high-performance inference engines, Eigen linear algebra, and optimized tensor convolutions in C++17.",
+        snippet: "Cache locality and SIMD AVX-512 register utilization dictate deep learning inference latency on modern server CPUs."
+      },
+      {
+        title: "Linear Algebra for Data Science",
+        subject: "Mathematics",
+        author: "Vector Calculus & Matrices",
+        pages: "310 pages",
+        chunks: "240 chunks",
+        desc: "Eigendecomposition, Singular Value Decomposition (SVD), orthogonal projections, and high-dimensional vector spaces.",
+        snippet: "The dot product of two normalized vectors computes the cosine of the angle between them in n-dimensional Euclidean space."
+      },
+      {
+        title: "AI as a Service: Serverless Machine Learning on AWS",
+        subject: "Cloud Architecture",
+        author: "Peter Elger & Eóin Shanaghy (Manning)",
+        pages: "290 pages",
+        chunks: "218 chunks",
+        desc: "Architecting cloud inference pipelines with AWS Lambda, S3 event buses, and asynchronous API gateways.",
+        snippet: "Serverless functions decouple stateful vector stores from ephemeral inference workers, ensuring horizontal elasticity."
+      },
+      {
+        title: "CRC Data Science: A First Introduction with Python",
+        subject: "Data Science",
+        author: "Tiffany Timbers et al. (CRC Press)",
+        pages: "410 pages",
+        chunks: "312 chunks",
+        desc: "Reproducible data pipelines, exploratory hypothesis testing, and statistical clustering workflows.",
+        snippet: "k-Nearest Neighbors classifies target observations by computing Euclidean distances across normalized feature manifolds."
+      },
+      {
+        title: "Cryptography and Embedded Systems Security",
+        subject: "Security",
+        author: "C. Paar & J. Pelzl (Springer)",
+        pages: "256 pages",
+        chunks: "198 chunks",
+        desc: "Symmetric ciphers, public-key RSA, elliptic curve mathematics, and side-channel hardware attack mitigation.",
+        snippet: "Constant-time cryptographic algorithms prevent timing side-channel attacks during modular exponentiation routines."
+      },
+      {
+        title: "Graph-Powered Analytics and Machine Learning",
+        subject: "Graph Databases",
+        author: "Alessandro Negro (Manning)",
+        pages: "245 pages",
+        chunks: "185 chunks",
+        desc: "Graph neural networks, node embeddings, PageRank, and interconnected knowledge graph entity resolution.",
+        snippet: "Graph traversal algorithms uncover latent multi-hop topological relationships that tabular relational models obscure."
+      },
+      {
+        title: "Python in Finance: Practical Numerical Algorithms",
+        subject: "Python & Finance",
+        author: "Yves Hilpisch (O'Reilly)",
+        pages: "305 pages",
+        chunks: "224 chunks",
+        desc: "Algorithmic trading engines, Monte Carlo simulations, Cython acceleration, and multiprocessing multiprocessing.",
+        snippet: "The Global Interpreter Lock prevents simultaneous native thread execution, mandating process-based parallelism for CPU tasks."
+      }
+    ];
+
+    function setup3DBookTilt() {
+      const cards = document.querySelectorAll('.book-card');
+      cards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const cx = rect.width / 2;
+          const cy = rect.height / 2;
+          const rotateX = ((y - cy) / cy) * -9;
+          const rotateY = ((x - cx) / cx) * 9;
+          card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px) scale(1.02)`;
+          card.style.setProperty('--mouse-x', `${(x / rect.width) * 100}%`);
+          card.style.setProperty('--mouse-y', `${(y / rect.height) * 100}%`);
+        });
+        card.addEventListener('mouseleave', () => {
+          card.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg) translateY(0) scale(1)';
+        });
+      });
+    }
+
+    function openBookModal(idx) {
+      const book = bookCatalogData[idx];
+      playTone(560, 'sine', 0.08);
+      document.getElementById('modalBookTitle').textContent = book.title;
+      document.getElementById('modalSubjectBadge').textContent = book.subject;
+      document.getElementById('modalBookDesc').textContent = book.author + " • " + book.desc;
+      document.getElementById('modalChunksVal').textContent = book.chunks;
+      document.getElementById('modalPagesVal').textContent = book.pages;
+      document.getElementById('modalSnippet').textContent = `"${book.snippet}"`;
+      document.getElementById('bookModalBackdrop').style.display = 'flex';
+    }
+
+    function closeBookModal(e) {
+      if (e.target.id === 'bookModalBackdrop') {
+        document.getElementById('bookModalBackdrop').style.display = 'none';
+      }
+    }
+    function closeBookModalDirect() {
+      document.getElementById('bookModalBackdrop').style.display = 'none';
+    }
+
+    /* =====================================================================
+       3. 2D VECTOR RADAR INTERACTIVE GALAXY (Draggable Query Vector Q)
+       ===================================================================== */
+    const canvas = document.getElementById('vectorCanvas');
+    const ctx = canvas.getContext('2d');
+    let points = [];
+    let radarRadius = 0;
+    let isPinging = false;
+
+    let queryPos = { x: 0.65, y: 0.45 };
+    let isDraggingQuery = false;
+
+    const clusters = [
+      { name: 'dl', cx: 0.65, cy: 0.45, color: '#c2593f', label: 'Deep Learning' },
+      { name: 'sql', cx: 0.25, cy: 0.70, color: '#b86e1e', label: 'SQL' },
+      { name: 'py', cx: 0.35, cy: 0.35, color: '#3d7a46', label: 'Python' },
+      { name: 'sys', cx: 0.75, cy: 0.75, color: '#4a5c68', label: 'Systems' }
+    ];
+
+    function resizeCanvas() {
+      const rect = canvas.parentElement.getBoundingClientRect();
+      canvas.width = rect.width;
+      canvas.height = rect.height;
+      initPoints();
+    }
+
+    function initPoints() {
+      points = [];
+      const totalPoints = 190;
+      for (let i = 0; i < totalPoints; i++) {
+        const cluster = clusters[i % clusters.length];
+        const r = Math.random() * 58;
+        const angle = Math.random() * Math.PI * 2;
+        const x = cluster.cx * canvas.width + Math.cos(angle) * r;
+        const y = cluster.cy * canvas.height + Math.sin(angle) * r;
+        points.push({
+          x, y,
+          vx: (Math.random() - 0.5) * 0.15,
+          vy: (Math.random() - 0.5) * 0.15,
+          color: cluster.color,
+          cluster: cluster.name,
+          baseRadius: Math.random() * 1.8 + 1.2,
+          origX: x, origY: y,
+          book: cluster.label + " Chunk #" + (i + 1)
+        });
+      }
+    }
+
+    function triggerRadarPulse() {
+      playTone(400, 'sine', 0.3, 0.05);
+      radarRadius = 0;
+      isPinging = true;
+    }
+
+    function warpQueryTo(clusterName) {
+      const cl = clusters.find(c => c.name === clusterName);
+      if (!cl) return;
+      playTone(600, 'triangle', 0.1);
+
+      const targetX = cl.cx;
+      const targetY = cl.cy;
+      let startX = queryPos.x;
+      let startY = queryPos.y;
+      let startTime = null;
+
+      function stepWarp(timestamp) {
+        if (!startTime) startTime = timestamp;
+        let progress = (timestamp - startTime) / 400;
+        if (progress > 1) progress = 1;
+        const ease = 1 - Math.pow(1 - progress, 3);
+        queryPos.x = startX + (targetX - startX) * ease;
+        queryPos.y = startY + (targetY - startY) * ease;
+        if (progress < 1) {
+          requestAnimationFrame(stepWarp);
+        } else {
+          triggerRadarPulse();
+        }
+      }
+      requestAnimationFrame(stepWarp);
+    }
+
+    function drawVectorSpace() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const qx = queryPos.x * canvas.width;
+      const qy = queryPos.y * canvas.height;
+
+      // Update coords badge
+      document.getElementById('radarCoordsText').textContent = `Q Vector: [${queryPos.x.toFixed(2)}, ${queryPos.y.toFixed(2)}]`;
+
+      // Update & subtle Brownian drift
+      points.forEach(pt => {
+        pt.x += pt.vx;
+        pt.y += pt.vy;
+        if (Math.hypot(pt.x - pt.origX, pt.y - pt.origY) > 8) {
+          pt.vx *= -1;
+          pt.vy *= -1;
+        }
+      });
+
+      // Calculate distances to Q
+      const sortedByDist = points.map(pt => {
+        const d = Math.hypot(pt.x - qx, pt.y - qy);
+        const sim = Math.max(0, 1 - d / (canvas.width * 0.45));
+        return { pt, d, sim };
+      }).sort((a, b) => a.d - b.d);
+
+      const topK = sortedByDist.slice(0, 5);
+
+      // Radar Wave Animation
+      if (isPinging) {
+        radarRadius += 3.8;
+        ctx.beginPath();
+        ctx.arc(qx, qy, radarRadius, 0, Math.PI * 2);
+        const alpha = Math.max(0, 1 - radarRadius / 280);
+        ctx.strokeStyle = `rgba(194, 89, 63, ${alpha})`;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        if (radarRadius > 280) isPinging = false;
+      }
+
+      // Draw all background points
+      points.forEach(pt => {
+        ctx.beginPath();
+        ctx.arc(pt.x, pt.y, pt.baseRadius, 0, Math.PI * 2);
+        ctx.fillStyle = pt.color;
+        ctx.fill();
+      });
+
+      // Draw Top-K Laser Rays from Q
+      topK.forEach((item, idx) => {
+        const pt = item.pt;
+        ctx.beginPath();
+        ctx.moveTo(qx, qy);
+        ctx.lineTo(pt.x, pt.y);
+        ctx.strokeStyle = idx === 0 ? 'rgba(194, 89, 63, 0.75)' : 'rgba(194, 89, 63, 0.35)';
+        ctx.lineWidth = idx === 0 ? 1.8 : 1.0;
+        ctx.stroke();
+
+        // Highlight point
+        ctx.beginPath();
+        ctx.arc(pt.x, pt.y, pt.baseRadius * 2, 0, Math.PI * 2);
+        ctx.fillStyle = pt.color;
+        ctx.fill();
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+
+        // Sim badge on ray
+        const midX = (qx + pt.x) / 2;
+        const midY = (qy + pt.y) / 2;
+        ctx.fillStyle = 'rgba(20, 19, 18, 0.85)';
+        ctx.fillRect(midX - 22, midY - 8, 44, 16);
+        ctx.fillStyle = '#faf9f5';
+        ctx.font = '9px JetBrains Mono';
+        ctx.textAlign = 'center';
+        ctx.fillText(`sim:${item.sim.toFixed(3)}`, midX, midY + 4);
+      });
+
+      // Draw Query Vector Node Q
+      ctx.beginPath();
+      ctx.arc(qx, qy, 7, 0, Math.PI * 2);
+      ctx.fillStyle = '#ffffff';
+      ctx.fill();
+      ctx.lineWidth = 2.5;
+      ctx.strokeStyle = '#c2593f';
+      ctx.stroke();
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 11px JetBrains Mono';
+      ctx.textAlign = 'left';
+      ctx.fillText('Q (Query Vector)', qx + 10, qy - 8);
+
+      requestAnimationFrame(drawVectorSpace);
+    }
+
+    // Canvas Mouse & Drag Controls
+    function setupCanvasInteraction() {
+      const container = document.getElementById('radarContainer');
+
+      canvas.addEventListener('mousedown', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const mx = e.clientX - rect.left;
+        const my = e.clientY - rect.top;
+        const qx = queryPos.x * canvas.width;
+        const qy = queryPos.y * canvas.height;
+
+        if (Math.hypot(mx - qx, my - qy) < 24) {
+          isDraggingQuery = true;
+        } else {
+          queryPos.x = mx / canvas.width;
+          queryPos.y = my / canvas.height;
+          triggerRadarPulse();
+        }
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        if (!isDraggingQuery) return;
+        const rect = canvas.getBoundingClientRect();
+        let nx = (e.clientX - rect.left) / canvas.width;
+        let ny = (e.clientY - rect.top) / canvas.height;
+        queryPos.x = Math.max(0.05, Math.min(0.95, nx));
+        queryPos.y = Math.max(0.05, Math.min(0.95, ny));
+      });
+
+      window.addEventListener('mouseup', () => {
+        if (isDraggingQuery) {
+          isDraggingQuery = false;
+          playTone(480, 'sine', 0.08);
+        }
+      });
+    }
+
+    /* =====================================================================
+       4. INTERACTIVE RRF FUSION PHYSICS SANDBOX
+       ===================================================================== */
+    const rrfCandidates = [
+      {
+        id: "chunk-1",
+        title: "Deep Learning from Scratch (pp. 176-177)",
+        denseRank: 1,
+        denseScore: 0.8186,
+        bm25Rank: 2,
+        bm25Score: 31.89,
+        snippet: "Figure 6-6. Another order in which data could flow through the same RNN during its forward pass.",
+        type: "dense-top"
+      },
+      {
+        id: "chunk-2",
+        title: "Deep Learning from Scratch (pp. 158-159)",
+        denseRank: 11,
+        denseScore: 0.7412,
+        bm25Rank: 3,
+        bm25Score: 30.14,
+        snippet: "To compute the predictions of the RNN, we execute a forward pass through the unrolled sequence timesteps...",
+        type: "promoted"
+      },
+      {
+        id: "chunk-4",
+        title: "Deep Learning from Scratch (pp. 86-87)",
+        denseRank: 20,
+        denseScore: 0.6980,
+        bm25Rank: 1,
+        bm25Score: 32.45,
+        snippet: "A forward pass calculates activations layer by layer: for layer in self.layers: X = layer.forward(X)...",
+        type: "promoted"
+      },
+      {
+        id: "chunk-3",
+        title: "Hands-On Machine Learning with C++ (pp. 120-121)",
+        denseRank: 2,
+        denseScore: 0.7924,
+        bm25Rank: 14,
+        bm25Score: 18.20,
+        snippet: "Matrix multiplications during forward propagation are accelerated through BLAS GEMM kernels...",
+        type: "standard"
+      },
+      {
+        id: "chunk-5",
+        title: "AI as a Service: Serverless ML (pp. 45-46)",
+        denseRank: 5,
+        denseScore: 0.7610,
+        bm25Rank: 5,
+        bm25Score: 26.50,
+        snippet: "Deploying deep learning forward inference pipelines within AWS Lambda serverless functions...",
+        type: "standard"
+      },
+      {
+        id: "chunk-6",
+        title: "Linear Algebra for Data Science (pp. 92-93)",
+        denseRank: 9,
+        denseScore: 0.7450,
+        bm25Rank: 4,
+        bm25Score: 28.10,
+        snippet: "Affine transformations in forward propagation represent composition of linear maps: f(x) = Wx + b...",
+        type: "standard"
+      }
+    ];
+
+    function calculateRRFScore(denseRank, bm25Rank, k) {
+      return (1.0 / (k + denseRank)) + (1.0 / (k + bm25Rank));
+    }
+
+    function renderRRFCards(k = 60) {
+      const container = document.getElementById('rrfCardsContainer');
+      const scored = rrfCandidates.map(c => {
+        const score = calculateRRFScore(c.denseRank, c.bm25Rank, k);
+        return { ...c, score };
+      });
+
+      // Sort descending by RRF score
+      scored.sort((a, b) => b.score - a.score);
+
+      const slotHeight = 62; // 56px height + 6px gap
+
+      scored.forEach((c, idx) => {
+        let el = document.getElementById(c.id);
+        if (!el) {
+          el = document.createElement('div');
+          el.id = c.id;
+          el.className = `rrf-rank-card ${c.type}`;
+          el.innerHTML = `
+            <div class="card-left-info">
+              <span class="card-rank-num" id="${c.id}-rank">#${idx + 1}</span>
+              <div>
+                <div class="card-title-text">${c.title}</div>
+                <div class="card-snippet-text">${c.snippet}</div>
+              </div>
+            </div>
+            <div class="card-scores-row">
+              <span class="score-chip">Dense #${c.denseRank}</span>
+              <span class="score-chip">BM25 #${c.bm25Rank}</span>
+              <span class="score-chip rrf-total-chip" id="${c.id}-score">${c.score.toFixed(5)}</span>
+            </div>
+          `;
+          container.appendChild(el);
+        }
+
+        // Apply physical FLIP transform
+        el.style.transform = `translateY(${idx * slotHeight}px)`;
+        document.getElementById(`${c.id}-rank`).textContent = `#${idx + 1}`;
+        document.getElementById(`${c.id}-score`).textContent = `RRF: ${c.score.toFixed(5)}`;
+      });
+    }
+
+    function updateRRFSlider(val) {
+      const k = parseInt(val);
+      document.getElementById('kValBadge').textContent = `k = ${k}`;
+      document.querySelectorAll('.k-preset-btn').forEach(btn => btn.classList.remove('active'));
+      playTone(200 + k * 6, 'sine', 0.04, 0.02);
+      renderRRFCards(k);
+    }
+
+    function setKPreset(k) {
+      document.getElementById('kSlider').value = k;
+      document.getElementById('kValBadge').textContent = `k = ${k}`;
+      document.querySelectorAll('.k-preset-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.textContent.includes(`k = ${k}`));
+      });
+      playTone(520, 'sine', 0.08);
+      renderRRFCards(k);
+    }
+
+    function playShuffleDuel() {
+      let kSequence = [1, 5, 20, 60];
+      let i = 0;
+      const interval = setInterval(() => {
+        if (i < kSequence.length) {
+          setKPreset(kSequence[i]);
+          i++;
+        } else {
+          clearInterval(interval);
+        }
+      }, 700);
+    }
+
+    /* =====================================================================
+       5. 8-STAGE INTERACTIVE BACKEND SIMULATOR
+       ===================================================================== */
     function showStage(stageNum) {
-      const stage = stages[stageNum - 1];
+      const sc = benchmarkScenarios[currentScenarioIdx];
+      const stage = sc.stages[stageNum - 1];
+
+      playTone(320 + stageNum * 40, 'sine', 0.06);
+
       document.querySelectorAll('.step-pill').forEach((p, idx) => {
         p.classList.remove('active');
         if (idx < stageNum - 1) {
@@ -880,7 +2428,8 @@ return X
           p.classList.remove('completed');
         }
       });
-      document.getElementById('step-' + stageNum).classList.add('active');
+      const activePill = document.getElementById('step-' + stageNum);
+      if (activePill) activePill.classList.add('active');
 
       document.getElementById('stage-title').textContent = stage.title;
       document.getElementById('stage-latency').textContent = "Latency: " + stage.latency;
@@ -888,8 +2437,55 @@ return X
       document.getElementById('stage-code').textContent = stage.code;
 
       if (stageNum === 8) {
-        document.getElementById('final-answer-preview').style.display = 'block';
+        streamFinalAnswer();
       }
+    }
+
+    let isStreaming = false;
+    function streamFinalAnswer() {
+      const sc = benchmarkScenarios[currentScenarioIdx];
+      const preview = document.getElementById('final-answer-preview');
+      preview.style.display = 'block';
+
+      document.getElementById('finalAnswerTitle').textContent = sc.finalAnswer.title;
+      document.getElementById('totalLatencyBadge').textContent = sc.finalAnswer.totalLatency;
+
+      const text1 = document.getElementById('typewriter-text-1');
+      const codeBox = document.getElementById('typewriter-code-box');
+      const text2 = document.getElementById('typewriter-text-2');
+
+      const p1 = sc.finalAnswer.p1;
+      codeBox.textContent = sc.finalAnswer.code;
+      const p2 = sc.finalAnswer.p2;
+
+      text1.textContent = "";
+      codeBox.style.display = 'none';
+      text2.textContent = "";
+
+      let idx = 0;
+      isStreaming = true;
+      const interval = setInterval(() => {
+        if (idx < p1.length) {
+          text1.textContent = p1.substring(0, idx + 1);
+          idx += 2;
+          if (idx % 8 === 0) playTone(700 + Math.random() * 80, 'sine', 0.02, 0.015);
+        } else {
+          clearInterval(interval);
+          codeBox.style.display = 'block';
+          let idx2 = 0;
+          const interval2 = setInterval(() => {
+            if (idx2 < p2.length) {
+              text2.textContent = p2.substring(0, idx2 + 1);
+              idx2 += 2;
+              if (idx2 % 8 === 0) playTone(650 + Math.random() * 80, 'sine', 0.02, 0.015);
+            } else {
+              clearInterval(interval2);
+              isStreaming = false;
+              playTone(880, 'triangle', 0.2, 0.04);
+            }
+          }, 12);
+        }
+      }, 12);
     }
 
     let simInterval = null;
@@ -899,6 +2495,8 @@ return X
       btn.disabled = true;
       btn.textContent = "Simulating Pipeline...";
       document.getElementById('final-answer-preview').style.display = 'none';
+
+      triggerRadarPulse();
 
       let current = 1;
       showStage(current);
@@ -912,8 +2510,21 @@ return X
           btn.disabled = false;
           btn.innerHTML = "<span>▶</span> Replay Simulation";
         }
-      }, 1200);
+      }, 1100);
     }
+
+    /* =====================================================================
+       INITIALIZATION
+       ===================================================================== */
+    window.addEventListener('resize', resizeCanvas);
+    window.addEventListener('DOMContentLoaded', () => {
+      resizeCanvas();
+      drawVectorSpace();
+      setupCanvasInteraction();
+      setup3DBookTilt();
+      loadBenchmarkScenario(0);
+      renderRRFCards(60);
+    });
   </script>
 </body>
 </html>
