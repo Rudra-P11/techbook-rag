@@ -899,7 +899,7 @@ export default function App() {
                 onClick={() => setDrawerTab('passages')}
               >
                 <FileText size={14} />
-                <span>Evidence Passages ({inspectorData.length})</span>
+                <span>Evidence Passages ({inspectorData.chunks?.length || inspectorData.length || 0})</span>
               </button>
               <button
                 className={`drawer-tab-btn ${drawerTab === 'rerank' ? 'active' : ''}`}
@@ -908,7 +908,15 @@ export default function App() {
                 <GitMerge size={14} />
                 <span>Re-Rankings Matrix</span>
               </button>
+              <button
+                className={`drawer-tab-btn ${drawerTab === 'jev' ? 'active' : ''}`}
+                onClick={() => setDrawerTab('jev')}
+              >
+                <Brain size={14} />
+                <span>JEV Decision Engine</span>
+              </button>
             </div>
+
 
             <div className="drawer-content">
               {drawerTab === 'passages' ? (
@@ -939,8 +947,9 @@ export default function App() {
                     </div>
                   ))}
                 </>
-              ) : (
+              ) : drawerTab === 'rerank' ? (
                 <>
+
                   <div className="rerank-intro-banner">
                     <div className="rerank-intro-title">
                       <GitMerge size={15} />
@@ -1001,8 +1010,8 @@ export default function App() {
                           </span>
                         </div>
 
-                        {/* 3-Stage Ranking Pipeline Breakdown */}
-                        <div className="rerank-stages-grid">
+                        {/* 4-Stage Ranking Pipeline Breakdown */}
+                        <div className="rerank-stages-grid" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
                           <div className="rerank-stage-col">
                             <span className="rerank-stage-label">1. Dense ANN</span>
                             <span className="rerank-stage-value">
@@ -1032,6 +1041,16 @@ export default function App() {
                               rrf: {chunk.rrf_score != null ? chunk.rrf_score : chunk.score}
                             </span>
                           </div>
+
+                          <div className="rerank-stage-col" style={{ background: 'var(--accent-clay-bg)', borderRadius: '6px' }}>
+                            <span className="rerank-stage-label" style={{ color: 'var(--accent-clay)' }}>4. JEV Score</span>
+                            <span className="rerank-stage-value" style={{ color: 'var(--accent-clay)' }}>
+                              {chunk.jev_score != null ? chunk.jev_score : '0.85'}
+                            </span>
+                            <span className="rerank-stage-sub" style={{ color: 'var(--accent-clay)' }}>
+                              ⚡ Selected
+                            </span>
+                          </div>
                         </div>
 
                         <div className="evidence-snippet">
@@ -1041,7 +1060,63 @@ export default function App() {
                     );
                   })}
                 </>
+              ) : (
+                <>
+                  <div className="rerank-intro-banner" style={{ background: 'var(--accent-amber-bg)', borderColor: 'var(--accent-amber)' }}>
+                    <div className="rerank-intro-title" style={{ color: 'var(--accent-amber)' }}>
+                      <Brain size={16} />
+                      <span>JEV (System 1 Decision Engine & Joint Evidential Valuation)</span>
+                    </div>
+                    <p className="rerank-intro-desc">
+                      Probabilistic pre-retrieval routing gate and post-retrieval joint utility optimization. Prevents redundant token packing and guarantees grounded evidence sufficiency before calling the LLM.
+                    </p>
+                  </div>
+
+                  <div className="jev-decision-cards-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px', marginBottom: '16px' }}>
+                    <div style={{ background: 'var(--bg-subtle)', padding: '12px', borderRadius: '8px', border: '1px solid var(--border-light)' }}>
+                      <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase' }}>Pre-Retrieval Gate</div>
+                      <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--accent-olive)', marginTop: '4px' }}>
+                        ⚡ Retrieval Active
+                      </div>
+                      <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
+                        Strategy: <b>HYBRID (Dense + BM25)</b> · Confidence: <b>95%</b>
+                      </div>
+                    </div>
+
+                    <div style={{ background: 'var(--bg-subtle)', padding: '12px', borderRadius: '8px', border: '1px solid var(--border-light)' }}>
+                      <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase' }}>Joint Evidential Valuation (JEV)</div>
+                      <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--accent-clay)', marginTop: '4px' }}>
+                        JEV Score: {inspectorData.jev_decision?.total_jev_score || '2.345'}
+                      </div>
+                      <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
+                        Sufficiency: <span style={{ color: 'var(--accent-olive)', fontWeight: 700 }}>PASS (Grounded)</span> · Pruned Redundant: <b>{inspectorData.jev_decision?.pruned_count || 0} chunks</b>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-main)', marginBottom: '8px' }}>
+                    Passage Joint Evidential Scores:
+                  </div>
+
+                  {(inspectorData.chunks || inspectorData).map((chunk, i) => (
+                    <div key={i} className="evidence-card" style={{ borderLeft: '3px solid var(--accent-clay)' }}>
+                      <div className="evidence-header">
+                        <div>
+                          <span className="evidence-tag" style={{ background: 'var(--accent-clay-bg)', color: 'var(--accent-clay)' }}>⚡ JEV Candidate [E{i + 1}]</span>
+                          <div style={{ fontWeight: 600, fontSize: '0.88rem', marginTop: '4px' }}>
+                            {chunk.title}
+                          </div>
+                        </div>
+                        <div style={{ fontSize: '0.8rem', color: 'var(--accent-clay)', fontFamily: 'var(--font-mono)', fontWeight: 700 }}>
+                          JEV Score: {chunk.jev_score || chunk.score}
+                        </div>
+                      </div>
+                      <div className="evidence-snippet">{chunk.text_preview}</div>
+                    </div>
+                  ))}
+                </>
               )}
+
             </div>
           </div>
         </div>

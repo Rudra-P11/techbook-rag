@@ -1650,10 +1650,10 @@ return X
         vectorSample: [-0.0421, 0.0814, 0.0159, -0.0632, 0.1105, -0.0219, 0.0487, -0.0912, 0.0345, 0.0712],
         stages: [
           {
-            title: "Stage 1: Input Sanitization & Domain Guardrail Defense",
+            title: "Stage 1: JEV System-1 Gate & Domain Guardrail Defense",
             latency: "14 ms",
-            desc: "Validates query safety against prompt injections and technical domain scope. Intercepts non-technical inquiries in 14ms without calling OpenAI.",
-            code: `is_allowed, cat, msg = domain_guardrail.check_query_safety(query)\n# Result: ALLOWED (Scope: Deep Learning & Neural Architectures)\nsanitized_query, flagged = injection_guardrail.sanitize_query(query)`
+            desc: "System-1 probabilistic decision model evaluates query intent. Determines retrieval requirements, search routing, or direct response in 14ms.",
+            code: `jev_dec = jev_engine.evaluate_query_intent(query)\n# Decision: Noul(requires_retrieval=True), Choice(search_strategy='hybrid')\n# Confidence: 95% | Guardrail Status: ALLOWED (Technical Domain Scope)`
           },
           {
             title: "Stage 2: Dense Vectorization (BAAI/bge-small-en-v1.5)",
@@ -1674,11 +1674,12 @@ return X
             code: `# Chunk #1: 1/(60+1) + 1/(60+2)  = 0.03252 -> Final Rank #1\n# Chunk #2: 1/(60+11) + 1/(60+3) = 0.02996 -> Final Rank #2\n# Chunk #4: 1/(60+20) + 1/(60+1) = 0.02889 -> Promoted from #20 to #4!`
           },
           {
-            title: "Stage 5: Relevance Threshold Guardrail Verification",
-            latency: "2 ms",
-            desc: "Evaluates whether top-ranked candidates meet the minimum cosine similarity threshold (0.38) or non-zero BM25 score. Guarantees abstention on garbage queries.",
-            code: `max_dense = 0.8186 (Threshold: 0.3800)\nis_sufficient = max_dense >= 0.38 or max_lexical > 0\n# Guardrail Status: PASSED (Proceeding to Context Assembly)`
+            title: "Stage 5: Joint Evidential Valuation (JEV) & Redundancy Pruning",
+            latency: "3 ms",
+            desc: "Optimizes Joint Evidential Value: JEV(S) = sum(Relevance) - lambda * sum(Redundancy). Prunes redundant chunks before context assembly.",
+            code: `jev_res = jev_engine.calculate_joint_evidential_value(evidence_candidates)\n# Total JEV Score: 2.3451 | Sufficiency: PASSED | Pruned Redundant: 1 chunk\n# Selected Top Utility Candidates: [E1, E2, E3, E4]`
           },
+
           {
             title: "Stage 6: Grounded Evidence Context Packaging",
             latency: "5 ms",

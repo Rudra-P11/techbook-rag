@@ -39,6 +39,7 @@ class RetrievedChunk(BaseModel):
     dense_score: Optional[float] = None
     lexical_score: Optional[float] = None
     rrf_score: Optional[float] = None
+    jev_score: Optional[float] = None
     final_rank: Optional[int] = None
 
 
@@ -53,4 +54,6 @@ class ChatResponse(BaseModel):
     citations: List[Citation] = Field(default_factory=list)
     retrieved_chunks: List[RetrievedChunk] = Field(default_factory=list)
     metrics: ChatMetrics
+    jev_decision: Optional[Dict[str, Any]] = None
     conversation_id: Optional[str] = None
+

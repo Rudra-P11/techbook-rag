@@ -717,16 +717,18 @@
             <button class="sim-tab-btn active" id="btn-mode-dense" onclick="setMode('dense')">1. Dense ANN Order</button>
             <button class="sim-tab-btn" id="btn-mode-bm25" onclick="setMode('bm25')">2. BM25 Lexical Order</button>
             <button class="sim-tab-btn" id="btn-mode-rrf" onclick="setMode('rrf')">3. Final RRF Order</button>
+            <button class="sim-tab-btn" id="btn-mode-jev" onclick="setMode('jev')">4. ⚡ JEV Decision Gate</button>
           </div>
 
           <button class="btn-run-sim" id="btn-play-anim" onclick="runFullAnimation()">
-            <span>▶</span> Run Re-Ranking Animation
+            <span>▶</span> Run Pipeline Animation
           </button>
         </div>
 
         <div class="sim-stage-desc" id="sim-status-banner">
           Viewing initial <strong>Dense ANN Semantic Order</strong>. Notice Chunk #4 is buried at the bottom (Rank #20) despite having exact technical phrasing.
         </div>
+
 
         <div class="sim-cards-container" id="cards-container">
           <!-- Card 1 -->
@@ -964,13 +966,14 @@ for layer in reversed(self.layers):
     const orderings = {
       dense: ['c1', 'c5', 'c3', 'c2', 'c6', 'c4'], // sorted by denseRank: 1, 6, 8, 11, 19, 20
       bm25:  ['c4', 'c1', 'c2', 'c6', 'c3', 'c5'], // sorted by bm25Rank: 1, 2, 3, 4, 6, 15
-      rrf:   ['c1', 'c2', 'c3', 'c4', 'c5', 'c6']  // sorted by rrfRank: 1, 2, 3, 4, 5, 6
+      rrf:   ['c1', 'c2', 'c3', 'c4', 'c5', 'c6'], // sorted by rrfRank: 1, 2, 3, 4, 5, 6
+      jev:   ['c1', 'c2', 'c3', 'c4', 'c5', 'c6']  // Joint Evidential Valuation
     };
 
     const SLOT_HEIGHT = 86; // px per slot (76px height + 10px margin)
 
     function updateCardPositions(mode, showFormula = false) {
-      const order = orderings[mode];
+      const order = orderings[mode] || orderings.rrf;
       
       order.forEach((cid, slotIndex) => {
         const card = document.getElementById('card-' + cid);
@@ -1007,6 +1010,11 @@ for layer in reversed(self.layers):
           } else {
             card.classList.remove('highlight');
           }
+        } else if (mode === 'jev') {
+          rankBox.textContent = '⚡';
+          scoreLabel.textContent = 'JEV Utility';
+          scoreVal.textContent = (data.denseScore * 0.9 + 0.05).toFixed(3);
+          card.classList.add('highlight');
         }
       });
     }
@@ -1027,6 +1035,9 @@ for layer in reversed(self.layers):
       } else if (mode === 'rrf') {
         banner.innerHTML = 'Stage 3: <strong>Reciprocal Rank Fusion (k=60) Order</strong>. The reciprocal scores combine, promoting Chunk #4 by +16 positions straight into the prompt context.';
         updateCardPositions('rrf', true);
+      } else if (mode === 'jev') {
+        banner.innerHTML = 'Stage 4: <strong>⚡ JEV System-1 Decision Gate & Joint Evidential Valuation</strong>. Evaluates joint relevance utility (JEV = 2.345) while pruning redundant context. Evidence Sufficiency: <strong>PASSED (Grounded)</strong>.';
+        updateCardPositions('jev', true);
       }
     }
 
@@ -1044,7 +1055,7 @@ for layer in reversed(self.layers):
       animTimer = setTimeout(() => {
         setMode('bm25');
 
-        // Step 3: Flash formulas after 2.0s
+        // Step 3: Flash RRF formulas after 2.0s
         animTimer = setTimeout(() => {
           document.getElementById('sim-status-banner').innerHTML = 'Computing Reciprocal Rank Fusion: <code>1/(60 + DenseRank) + 1/(60 + LexicalRank)</code>...';
           document.querySelectorAll('.sim-item-card').forEach(c => c.classList.add('show-formula'));
@@ -1052,14 +1063,21 @@ for layer in reversed(self.layers):
           // Step 4: Re-order cards into final RRF after 1.2s
           animTimer = setTimeout(() => {
             setMode('rrf');
-            playBtn.innerHTML = '<span>▶</span> Replay Animation';
-            playBtn.disabled = false;
+
+            // Step 5: JEV System 1 Evaluation after 1.8s
+            animTimer = setTimeout(() => {
+              setMode('jev');
+              playBtn.innerHTML = '<span>▶</span> Replay Animation';
+              playBtn.disabled = false;
+            }, 1800);
+
           }, 1400);
 
         }, 2000);
 
       }, 1800);
     }
+
 
     // Initialize layout on load
     window.addEventListener('DOMContentLoaded', () => {

@@ -150,10 +150,20 @@ class ChatService:
                     dense_score=round(ev["dense_score"], 4) if ev.get("dense_score") is not None else None,
                     lexical_score=round(ev["lexical_score"], 4) if ev.get("lexical_score") is not None else None,
                     rrf_score=round(ev.get("rrf_score", ev["score"]), 5),
+                    jev_score=round(ev.get("jev_score", ev.get("dense_score", 0.0)), 4),
                     final_rank=ev.get("final_rank")
                 ))
 
         total_latency_ms = int((time.perf_counter() - start_total) * 1000)
+
+        jev_summary = {
+            "requires_retrieval": jev_query_dec.requires_retrieval,
+            "search_strategy": jev_query_dec.search_strategy,
+            "confidence": jev_query_dec.confidence,
+            "total_jev_score": jev_context_res.total_jev_score,
+            "pruned_count": jev_context_res.pruned_count,
+            "is_sufficient": jev_context_res.is_sufficient
+        }
 
         return ChatResponse(
             answer=final_answer,
@@ -164,8 +174,10 @@ class ChatService:
                 generation_latency_ms=gen_latency_ms,
                 total_latency_ms=total_latency_ms
             ),
+            jev_decision=jev_summary,
             conversation_id=request.conversation_id
         )
+
 
 
 chat_service = ChatService()
