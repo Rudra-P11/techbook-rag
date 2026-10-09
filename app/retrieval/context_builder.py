@@ -58,6 +58,10 @@ class ContextBuilder:
                 "score": chunk.get("rrf_score", chunk.get("score", 0.0)),
                 "dense_score": chunk.get("dense_score", 0.0),
                 "lexical_score": chunk.get("lexical_score", 0.0),
+                "dense_rank": chunk.get("dense_rank"),
+                "lexical_rank": chunk.get("lexical_rank"),
+                "rrf_score": chunk.get("rrf_score", chunk.get("score", 0.0)),
+                "final_rank": idx,
                 "text": chunk_text
             })
 

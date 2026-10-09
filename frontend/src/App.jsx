@@ -28,7 +28,11 @@ import {
   PanelLeftOpen,
   ArrowRight,
   Mic,
-  Square
+  Square,
+  GitMerge,
+  TrendingUp,
+  TrendingDown,
+  BarChart3
 } from 'lucide-react';
 
 marked.setOptions({
@@ -73,6 +77,7 @@ export default function App() {
   const [documents, setDocuments] = useState([]);
   const [selectedSubjects, setSelectedSubjects] = useState([]);
   const [inspectorData, setInspectorData] = useState(null);
+  const [drawerTab, setDrawerTab] = useState('passages'); // 'passages' | 'rerank'
   const [uploading, setUploading] = useState(false);
   const [copiedIdx, setCopiedIdx] = useState(null);
   const messagesEndRef = useRef(null);
@@ -653,7 +658,10 @@ export default function App() {
                       <span
                         key={cIdx}
                         className="citation-chip"
-                        onClick={() => setInspectorData(msg.retrieved_chunks || [])}
+                        onClick={() => {
+                          setInspectorData(msg.retrieved_chunks || []);
+                          setDrawerTab('passages');
+                        }}
                         title="Click to view full evidence passage in Inspector Drawer"
                       >
                         <FileText size={12} />
@@ -687,7 +695,10 @@ export default function App() {
                         <>
                           <span>•</span>
                           <button
-                            onClick={() => setInspectorData(msg.retrieved_chunks)}
+                            onClick={() => {
+                              setInspectorData(msg.retrieved_chunks);
+                              setDrawerTab('passages');
+                            }}
                             style={{ 
                               background: 'transparent', 
                               color: 'var(--accent-primary)', 
@@ -697,6 +708,27 @@ export default function App() {
                             }}
                           >
                             Inspect {msg.retrieved_chunks.length} Passages
+                          </button>
+                          <span>•</span>
+                          <button
+                            onClick={() => {
+                              setInspectorData(msg.retrieved_chunks);
+                              setDrawerTab('rerank');
+                            }}
+                            style={{ 
+                              background: 'transparent', 
+                              color: 'var(--accent-secondary)', 
+                              fontSize: '0.74rem', 
+                              fontWeight: 600,
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '3px',
+                              textDecoration: 'underline' 
+                            }}
+                            title="View Dense vs BM25 vs RRF Re-ranking Matrix"
+                          >
+                            <GitMerge size={12} />
+                            View Re-Rankings
                           </button>
                         </>
                       )}
@@ -849,7 +881,7 @@ export default function App() {
             <div className="drawer-header">
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <Layers size={18} color="var(--accent-primary)" />
-                <h3 style={{ fontSize: '1rem', fontWeight: 700 }}>Retrieval Inspector</h3>
+                <h3 style={{ fontSize: '1rem', fontWeight: 700 }}>Retrieval & Re-Ranking Inspector</h3>
               </div>
               <button
                 onClick={() => setInspectorData(null)}
@@ -860,32 +892,156 @@ export default function App() {
               </button>
             </div>
 
+            {/* Tab Navigation */}
+            <div className="drawer-tabs">
+              <button
+                className={`drawer-tab-btn ${drawerTab === 'passages' ? 'active' : ''}`}
+                onClick={() => setDrawerTab('passages')}
+              >
+                <FileText size={14} />
+                <span>Evidence Passages ({inspectorData.length})</span>
+              </button>
+              <button
+                className={`drawer-tab-btn ${drawerTab === 'rerank' ? 'active' : ''}`}
+                onClick={() => setDrawerTab('rerank')}
+              >
+                <GitMerge size={14} />
+                <span>Re-Rankings Matrix</span>
+              </button>
+            </div>
+
             <div className="drawer-content">
-              <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-                Showing evidence passages retrieved across dense ANN similarity and BM25 lexical ranking:
-              </div>
+              {drawerTab === 'passages' ? (
+                <>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                    Showing evidence passages retrieved across dense ANN similarity and BM25 lexical ranking:
+                  </div>
 
-              {inspectorData.map((chunk, i) => (
-                <div key={i} className="evidence-card">
-                  <div className="evidence-header">
-                    <div>
-                      <span className="evidence-tag">Evidence [E{i + 1}]</span>
-                      <div style={{ fontWeight: 600, fontSize: '0.88rem', marginTop: '4px' }}>
-                        {chunk.title}
+                  {inspectorData.map((chunk, i) => (
+                    <div key={i} className="evidence-card">
+                      <div className="evidence-header">
+                        <div>
+                          <span className="evidence-tag">Evidence [E{i + 1}]</span>
+                          <div style={{ fontWeight: 600, fontSize: '0.88rem', marginTop: '4px' }}>
+                            {chunk.title}
+                          </div>
+                        </div>
+                        <div style={{ fontSize: '0.74rem', color: 'var(--accent-cyan)', fontFamily: 'var(--font-mono)' }}>
+                          Score: {chunk.score}
+                        </div>
                       </div>
+
+                      <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                        Pages: {chunk.page_numbers?.join(', ')} • Subject: {chunk.subject || 'Technical'}
+                      </div>
+
+                      <div className="evidence-snippet">{chunk.text_preview}</div>
                     </div>
-                    <div style={{ fontSize: '0.74rem', color: 'var(--accent-cyan)', fontFamily: 'var(--font-mono)' }}>
-                      Score: {chunk.score}
+                  ))}
+                </>
+              ) : (
+                <>
+                  <div className="rerank-intro-banner">
+                    <div className="rerank-intro-title">
+                      <GitMerge size={15} />
+                      <span>Reciprocal Rank Fusion (RRF k=60) Pipeline</span>
                     </div>
+                    <p className="rerank-intro-desc">
+                      Combines <strong>Dense Semantic Search</strong> (BGE-Small 384d vector cosine similarity) and <strong>Lexical Search</strong> (BM25 Okapi term frequencies). The final context order is re-ranked using reciprocal position scores: <code>score = 1/(60 + DenseRank) + 1/(60 + LexicalRank)</code>.
+                    </p>
                   </div>
 
-                  <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
-                    Pages: {chunk.page_numbers?.join(', ')} • Subject: {chunk.subject || 'Technical'}
-                  </div>
+                  {inspectorData.map((chunk, i) => {
+                    const finalRank = i + 1;
+                    const dRank = chunk.dense_rank;
+                    const lRank = chunk.lexical_rank;
 
-                  <div className="evidence-snippet">{chunk.text_preview}</div>
-                </div>
-              ))}
+                    let shiftClass = 'neutral';
+                    let shiftText = `● Rank #${finalRank}`;
+                    let ShiftIcon = BarChart3;
+
+                    if (dRank != null) {
+                      const delta = dRank - finalRank;
+                      if (delta > 0) {
+                        shiftClass = 'promoted';
+                        shiftText = `▲ Promoted +${delta} ranks by BM25 synergy`;
+                        ShiftIcon = TrendingUp;
+                      } else if (delta < 0) {
+                        shiftClass = 'demoted';
+                        shiftText = `▼ Shifted ${delta} ranks in fusion`;
+                        ShiftIcon = TrendingDown;
+                      } else {
+                        shiftClass = 'neutral';
+                        shiftText = `● Held Dense Rank #${finalRank}`;
+                      }
+                    } else if (lRank != null) {
+                      shiftClass = 'lexical-only';
+                      shiftText = `★ Keyword match (BM25 #${lRank})`;
+                      ShiftIcon = GitMerge;
+                    }
+
+                    return (
+                      <div key={i} className="rerank-card">
+                        <div className="rerank-card-header">
+                          <div>
+                            <span className="rerank-final-badge">
+                              #{finalRank} Final Rank
+                            </span>
+                            <div style={{ fontWeight: 600, fontSize: '0.88rem', marginTop: '6px' }}>
+                              {chunk.title}
+                            </div>
+                            <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '2px' }}>
+                              Pages: {chunk.page_numbers?.join(', ')} • Subject: {chunk.subject || 'Technical'}
+                            </div>
+                          </div>
+
+                          <span className={`rerank-shift-pill ${shiftClass}`}>
+                            <ShiftIcon size={12} />
+                            <span>{shiftText}</span>
+                          </span>
+                        </div>
+
+                        {/* 3-Stage Ranking Pipeline Breakdown */}
+                        <div className="rerank-stages-grid">
+                          <div className="rerank-stage-col">
+                            <span className="rerank-stage-label">1. Dense ANN</span>
+                            <span className="rerank-stage-value">
+                              {dRank != null ? `#${dRank}` : '—'}
+                            </span>
+                            <span className="rerank-stage-sub">
+                              {chunk.dense_score != null ? `sim: ${chunk.dense_score}` : 'no match'}
+                            </span>
+                          </div>
+
+                          <div className="rerank-stage-col">
+                            <span className="rerank-stage-label">2. BM25 Lexical</span>
+                            <span className="rerank-stage-value">
+                              {lRank != null ? `#${lRank}` : '—'}
+                            </span>
+                            <span className="rerank-stage-sub">
+                              {chunk.lexical_score != null ? `bm25: ${chunk.lexical_score}` : 'no match'}
+                            </span>
+                          </div>
+
+                          <div className="rerank-stage-col">
+                            <span className="rerank-stage-label">3. RRF Re-Rank</span>
+                            <span className="rerank-stage-value" style={{ color: 'var(--accent-primary)' }}>
+                              #{finalRank}
+                            </span>
+                            <span className="rerank-stage-sub">
+                              rrf: {chunk.rrf_score != null ? chunk.rrf_score : chunk.score}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="evidence-snippet">
+                          {chunk.text_preview}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </>
+              )}
             </div>
           </div>
         </div>

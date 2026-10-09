@@ -122,7 +122,13 @@ class ChatService:
                     text_preview=ev["text"][:250] + ("..." if len(ev["text"]) > 250 else ""),
                     filename=ev.get("filename"),
                     title=ev.get("title"),
-                    subject=ev.get("subject")
+                    subject=ev.get("subject"),
+                    dense_rank=ev.get("dense_rank"),
+                    lexical_rank=ev.get("lexical_rank"),
+                    dense_score=round(ev["dense_score"], 4) if ev.get("dense_score") is not None else None,
+                    lexical_score=round(ev["lexical_score"], 4) if ev.get("lexical_score") is not None else None,
+                    rrf_score=round(ev.get("rrf_score", ev["score"]), 5),
+                    final_rank=ev.get("final_rank")
                 ))
 
         total_latency_ms = int((time.perf_counter() - start_total) * 1000)

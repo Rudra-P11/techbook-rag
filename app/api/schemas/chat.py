@@ -34,6 +34,12 @@ class RetrievedChunk(BaseModel):
     filename: Optional[str] = None
     title: Optional[str] = None
     subject: Optional[str] = None
+    dense_rank: Optional[int] = None
+    lexical_rank: Optional[int] = None
+    dense_score: Optional[float] = None
+    lexical_score: Optional[float] = None
+    rrf_score: Optional[float] = None
+    final_rank: Optional[int] = None
 
 
 class ChatMetrics(BaseModel):
