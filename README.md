@@ -9,7 +9,7 @@
 
 **Intelligent Technical Knowledge Assistant** — Adaptive RAG + JEV System-1 Decision Engine over 11 technical books (2,810 chunks) using hybrid Dense + BM25 search, Reciprocal Rank Fusion, and Joint Evidential Valuation.
 
-🔗 **Quick Links:** [Live Interactive Architecture Showcase](https://rudra-p11.github.io/techbook-rag/) · [RRF k=60 Forensic Case Study](https://rudra-p11.github.io/techbook-rag/case_study_rrf_retrieval.html)
+🔗 **Quick Links:** [Live Architecture Showcase](https://rudra-p11.github.io/techbook-rag/) · [RRF k=60 Forensic Case Study](https://rudra-p11.github.io/techbook-rag/case_study_rrf_retrieval.html) · [19-Query Multi-Round Benchmark](https://rudra-p11.github.io/techbook-rag/empirical_evaluation_study.html) · [📖 Interview & Metrics Playbook](interview_metrics_playbook.md)
 
 ---
 
@@ -25,9 +25,11 @@ Every answer is grounded in real textbook passages with **verifiable page-level 
 <br>
 
 > [!TIP]
-> **Explore the full system interactively in your browser:**
+> **Explore the system and empirical research in your browser:**
 > - [**Live Architecture Blueprint & Pipeline Simulator**](https://rudra-p11.github.io/techbook-rag/) — Interactive neural tokenizer, draggable 2D vector nebula, RRF physics sandbox, and 8-stage pipeline simulator
 > - [**Empirical Case Study: RRF k=60 Retrieval Analysis**](https://rudra-p11.github.io/techbook-rag/case_study_rrf_retrieval.html) — Forensic analysis of hybrid retrieval for *"What is a forward pass in a neural network?"*
+> - [**19-Query Multi-Round Benchmark & Hyperparameter Sweep**](https://rudra-p11.github.io/techbook-rag/empirical_evaluation_study.html) — 4-round architecture ablation study across 8 technical domains
+> - [**Production Defense & Interview Metrics Playbook**](interview_metrics_playbook.md) — Ready-to-copy resume bullet points (STAR format), 30s pitch, hyperparameter mathematical defense, and technical interview Q&A
 
 <br>
 
@@ -208,8 +210,13 @@ Open **`http://localhost:8501`** in your browser.
   </tr>
   <tr>
     <td align="center">📊</td>
-    <td><b>Retrieval Benchmarks</b></td>
-    <td><code>python scripts/evaluate_retrieval.py</code><br><sub>Results saved to <code>evaluation/reports/retrieval_report.json</code></sub></td>
+    <td><b>Multi-Round Benchmark</b></td>
+    <td><code>python scripts/evaluate_multiround.py</code><br><sub>4-round benchmark & ablation report saved to <code>evaluation/reports/multiround_report.json</code></sub></td>
+  </tr>
+  <tr>
+    <td align="center">🔬</td>
+    <td><b>Hyperparameter Tuning</b></td>
+    <td><code>python scripts/run_tuning.py</code><br><sub>11-config ablation sweep saved to <code>evaluation/reports/tuning_experiments.json</code></sub></td>
   </tr>
 </table>
 
