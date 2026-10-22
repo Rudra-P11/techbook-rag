@@ -7,11 +7,13 @@ class RankFusion:
         dense_results: List[Dict[str, Any]],
         lexical_results: List[Dict[str, Any]],
         k: int = 60,
-        top_k: int = 30
+        top_k: int = 30,
+        w_dense: float = 1.0,
+        w_lex: float = 1.0
     ) -> List[Dict[str, Any]]:
         """
         Combines dense and lexical candidates using Reciprocal Rank Fusion (RRF).
-        RRF_score(d) = sum(1 / (k + rank_i))
+        RRF_score(d) = w_dense / (k + rank_dense) + w_lex / (k + rank_lexical)
         """
         rrf_scores: Dict[str, float] = {}
         chunk_map: Dict[str, Dict[str, Any]] = {}
@@ -25,7 +27,7 @@ class RankFusion:
             cid = item["chunk_id"]
             ranks_dense[cid] = rank
             dense_scores[cid] = float(item.get("dense_score", item.get("score", 0.0)))
-            rrf_scores[cid] = rrf_scores.get(cid, 0.0) + (1.0 / (k + rank))
+            rrf_scores[cid] = rrf_scores.get(cid, 0.0) + (float(w_dense) / (k + rank))
             if cid not in chunk_map:
                 chunk_map[cid] = item
 
@@ -34,7 +36,7 @@ class RankFusion:
             cid = item["chunk_id"]
             ranks_lexical[cid] = rank
             lexical_scores[cid] = float(item.get("lexical_score", item.get("score", 0.0)))
-            rrf_scores[cid] = rrf_scores.get(cid, 0.0) + (1.0 / (k + rank))
+            rrf_scores[cid] = rrf_scores.get(cid, 0.0) + (float(w_lex) / (k + rank))
             if cid not in chunk_map:
                 chunk_map[cid] = item
 

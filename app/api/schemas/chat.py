@@ -15,7 +15,12 @@ class ChatRequest(BaseModel):
     top_k: int = Field(default=6, ge=1, le=20)
     model: Optional[str] = Field(default=None, description="Generation model name (e.g. gpt-4o-mini, gpt-4o)")
     include_retrieval_debug: bool = True
-
+    retrieval_mode: Optional[str] = Field(default="hybrid", description="dense_only | bm25_only | hybrid | hybrid_tuned | custom")
+    rrf_k: Optional[int] = Field(default=60, ge=1, le=200, description="RRF smoothing constant")
+    w_lex: Optional[float] = Field(default=1.0, ge=0.0, le=5.0, description="BM25 lexical weight factor")
+    w_dense: Optional[float] = Field(default=1.0, ge=0.0, le=5.0, description="Dense vector weight factor")
+    jev_enabled: Optional[bool] = Field(default=True, description="Enable JEV redundancy pruning and sufficiency gate")
+    force_local_synthesis: Optional[bool] = Field(default=False, description="Use local deterministic extractor when API key is unavailable")
 
 
 class Citation(BaseModel):
@@ -49,6 +54,20 @@ class ChatMetrics(BaseModel):
     retrieval_latency_ms: int
     generation_latency_ms: int
     total_latency_ms: int
+    retrieval_mode: Optional[str] = "hybrid"
+    rrf_k: Optional[int] = 60
+    w_lex: Optional[float] = 1.0
+    dense_count: Optional[int] = 0
+    lexical_count: Optional[int] = 0
+    fused_count: Optional[int] = 0
+    top_dense_score: Optional[float] = None
+    top_lexical_score: Optional[float] = None
+    top_rrf_score: Optional[float] = None
+    jev_status: Optional[str] = "PASS"
+    jev_pruned: Optional[int] = 0
+    jev_total_score: Optional[float] = None
+    redundancy_rate: Optional[float] = 0.0
+    synthesis_mode: Optional[str] = "openai"
 
 
 class ChatResponse(BaseModel):
