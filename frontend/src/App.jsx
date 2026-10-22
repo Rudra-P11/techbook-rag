@@ -35,7 +35,10 @@ import {
   BarChart3,
   ShieldCheck,
   Scale,
-  RefreshCw
+  RefreshCw,
+  ChevronDown,
+  ChevronUp,
+  Activity
 } from 'lucide-react';
 
 marked.setOptions({
@@ -65,6 +68,7 @@ export default function App() {
   const [wLex, setWLex] = useState(1.5);
   const [jevEnabled, setJevEnabled] = useState(true);
   const [showCustomTuning, setShowCustomTuning] = useState(false);
+  const [expandedMetrics, setExpandedMetrics] = useState({});
 
   // Voice speech-to-text recognition state
   const [isRecording, setIsRecording] = useState(false);
@@ -829,10 +833,36 @@ export default function App() {
                   </div>
                 )}
 
-                {/* Live Telemetry Dashboard Card */}
+                {/* Live Telemetry Dashboard Accordion (Hidden by default, user-expandable) */}
                 {msg.metrics && (
-                  <div className={`telemetry-dashboard-box mode-${msg.metrics.retrieval_mode?.includes('dense') ? 'dense' : 'tuned'}`}>
-                    <div className="telemetry-header-row">
+                  <div className="telemetry-accordion-container">
+                    <button
+                      className={`telemetry-toggle-btn ${expandedMetrics[idx] ? 'expanded' : ''}`}
+                      onClick={() => setExpandedMetrics((prev) => ({ ...prev, [idx]: !prev[idx] }))}
+                      title="Click to toggle detailed retrieval latency, JEV sufficiency gate, and rank movements"
+                    >
+                      <div className="telemetry-toggle-left">
+                        <Activity size={13} className="telemetry-icon" />
+                        <span className="telemetry-toggle-title">Retrieval Telemetry</span>
+                        <span className="telemetry-pill-summary">
+                          {msg.metrics.retrieval_mode === 'hybrid_tuned' && '⚡ Tuned RRF (k=10)'}
+                          {msg.metrics.retrieval_mode === 'hybrid' && '🔄 Standard RRF (k=60)'}
+                          {msg.metrics.retrieval_mode === 'dense_only' && '🔴 Dense Only'}
+                          {msg.metrics.retrieval_mode === 'bm25_only' && '🟢 BM25 Only'}
+                          {msg.metrics.retrieval_mode === 'custom' && '🎛️ Custom RRF'}
+                          {' · '}
+                          {msg.metrics.retrieval_latency_ms}ms fetch
+                        </span>
+                      </div>
+                      <div className="telemetry-toggle-right">
+                        <span>{expandedMetrics[idx] ? 'Hide Metrics' : 'View Metrics'}</span>
+                        {expandedMetrics[idx] ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
+                      </div>
+                    </button>
+
+                    {expandedMetrics[idx] && (
+                      <div className={`telemetry-dashboard-box mode-${msg.metrics.retrieval_mode?.includes('dense') ? 'dense' : 'tuned'}`}>
+                        <div className="telemetry-header-row">
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
                         {msg.metrics.retrieval_mode === 'hybrid_tuned' && (
                           <span className="tech-badge green">⚡ TUNED HYBRID RRF (k={msg.metrics.rrf_k ?? 10}, w={msg.metrics.w_lex ?? 1.5})</span>
@@ -1009,10 +1039,12 @@ export default function App() {
                           <Database size={11} />
                           <span>Test BM25 Only</span>
                         </button>
-                      </div>
-                    )}
-                  </div>
-                )}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
               </div>
             </div>
           ))}
