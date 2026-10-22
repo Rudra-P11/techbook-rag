@@ -1721,3 +1721,17 @@ input, textarea, select {
   color: #00f0ff;
   background: rgba(0, 240, 255, 0.08);
 }
+
+/* Upstream Provider / Expired API Key Error Alert */
+.provider-error-alert {
+  background: rgba(255, 0, 85, 0.12) !important;
+  border: 1px solid var(--neon-red) !important;
+  border-radius: 8px !important;
+  padding: 14px 18px !important;
+  color: #ff99bb !important;
+  box-shadow: 0 0 15px rgba(255, 0, 85, 0.25) !important;
+  font-family: var(--font-mono) !important;
+  font-size: 0.86rem !important;
+  line-height: 1.5 !important;
+}
+

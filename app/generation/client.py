@@ -15,11 +15,17 @@ class GenerationClient:
         self._client: Optional[OpenAI] = None
 
     def _get_client(self) -> OpenAI:
-        if not self.api_key:
+        import os
+        from dotenv import load_dotenv
+        from app.config import BASE_DIR
+        load_dotenv(str(BASE_DIR / ".env"), override=True)
+        key = os.getenv("OPENAI_API_KEY") or settings.OPENAI_API_KEY
+        if not key:
             raise ValueError("OPENAI_API_KEY is not configured in .env or environment.")
-        if self._client is None:
+        if self._client is None or self.api_key != key:
+            self.api_key = key
             self._client = OpenAI(
-                api_key=self.api_key,
+                api_key=key,
                 timeout=settings.OPENAI_TIMEOUT_SECONDS,
                 max_retries=settings.OPENAI_MAX_RETRIES
             )

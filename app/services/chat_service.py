@@ -14,7 +14,6 @@ from app.guardrails.domain_guardrail import domain_guardrail
 from app.decision.jev_engine import jev_engine
 from app.services.retrieval_service import retrieval_service
 from app.generation.client import generation_client
-from app.generation.local_synthesizer import local_synthesizer
 
 logger = logging.getLogger(__name__)
 
@@ -159,35 +158,7 @@ class ChatService:
 
         redundancy_rate = compute_pairwise_redundancy(evidence_list)
 
-        # Step 6: Grounded Generation (OpenAI or Local Deterministic Extractor Fallback)
-        raw_answer = ""
-        gen_latency_ms = 0
-        synthesis_mode = "openai"
-
-        if request.force_local_synthesis:
-            synthesis_mode = "local_neural_extractor"
-            raw_answer, gen_latency_ms = local_synthesizer.synthesize(sanitized_query, evidence_list)
-        else:
-            try:
-                raw_answer, gen_latency_ms = generation_client.generate_answer(
-                    query=sanitized_query,
-                    context=context_text,
-                    model=request.model,
-                    history=request.history
-                )
-            except Exception as e:
-                logger.warning(f"OpenAI generation unavailable ({e}). Falling back to local deterministic extractor.")
-                synthesis_mode = "local_fallback"
-                raw_answer, gen_latency_ms = local_synthesizer.synthesize(sanitized_query, evidence_list)
-
-        # Step 7: Citation Validation & Normalization
-        final_answer, citations = citation_validator.process_and_validate(
-            raw_answer=raw_answer,
-            evidence_list=evidence_list,
-            format_inline=True
-        )
-
-        # Step 8: Retrieved chunk debug metadata
+        # Step 6: Retrieved chunk debug metadata & telemetry
         retrieved_chunk_models = []
         if request.include_retrieval_debug:
             for ev in evidence_list:
@@ -209,8 +180,6 @@ class ChatService:
                     final_rank=ev.get("final_rank")
                 ))
 
-        total_latency_ms = int((time.perf_counter() - start_total) * 1000)
-
         jev_summary = {
             "enabled": jev_enabled,
             "requires_retrieval": jev_query_dec.requires_retrieval if jev_query_dec else True,
@@ -220,6 +189,53 @@ class ChatService:
             "pruned_count": pruned_count,
             "is_sufficient": is_sufficient
         }
+
+        # Step 7: Grounded Generation via OpenAI
+        try:
+            raw_answer, gen_latency_ms = generation_client.generate_answer(
+                query=sanitized_query,
+                context=context_text,
+                model=request.model,
+                history=request.history
+            )
+        except Exception as e:
+            total_latency_ms = int((time.perf_counter() - start_total) * 1000)
+            logger.error(f"Generation failure: {e}")
+            error_metrics = ChatMetrics(
+                retrieval_latency_ms=retrieval_latency_ms,
+                generation_latency_ms=0,
+                total_latency_ms=total_latency_ms,
+                retrieval_mode=telemetry_stats.get("retrieval_mode", retrieval_mode),
+                rrf_k=telemetry_stats.get("rrf_k", rrf_k),
+                w_lex=telemetry_stats.get("w_lex", w_lex),
+                dense_count=telemetry_stats.get("dense_count", 0),
+                lexical_count=telemetry_stats.get("lexical_count", 0),
+                fused_count=telemetry_stats.get("fused_count", len(evidence_list)),
+                top_dense_score=telemetry_stats.get("top_dense_score"),
+                top_lexical_score=telemetry_stats.get("top_lexical_score"),
+                top_rrf_score=telemetry_stats.get("top_rrf_score"),
+                jev_status="PASS" if is_sufficient else "ABSTAIN",
+                jev_pruned=pruned_count,
+                jev_total_score=round(total_jev_score, 3),
+                redundancy_rate=redundancy_rate
+            )
+            return ChatResponse(
+                answer=f"Unable to generate an answer at this time due to an upstream provider error: {str(e)}",
+                citations=[],
+                retrieved_chunks=retrieved_chunk_models,
+                metrics=error_metrics,
+                jev_decision=jev_summary,
+                conversation_id=request.conversation_id
+            )
+
+        # Step 8: Citation Validation & Normalization
+        final_answer, citations = citation_validator.process_and_validate(
+            raw_answer=raw_answer,
+            evidence_list=evidence_list,
+            format_inline=True
+        )
+
+        total_latency_ms = int((time.perf_counter() - start_total) * 1000)
 
         metrics = ChatMetrics(
             retrieval_latency_ms=retrieval_latency_ms,
@@ -237,8 +253,7 @@ class ChatService:
             jev_status="PASS" if is_sufficient else "ABSTAIN",
             jev_pruned=pruned_count,
             jev_total_score=round(total_jev_score, 3),
-            redundancy_rate=redundancy_rate,
-            synthesis_mode=synthesis_mode
+            redundancy_rate=redundancy_rate
         )
 
         return ChatResponse(

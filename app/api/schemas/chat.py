@@ -20,7 +20,6 @@ class ChatRequest(BaseModel):
     w_lex: Optional[float] = Field(default=1.0, ge=0.0, le=5.0, description="BM25 lexical weight factor")
     w_dense: Optional[float] = Field(default=1.0, ge=0.0, le=5.0, description="Dense vector weight factor")
     jev_enabled: Optional[bool] = Field(default=True, description="Enable JEV redundancy pruning and sufficiency gate")
-    force_local_synthesis: Optional[bool] = Field(default=False, description="Use local deterministic extractor when API key is unavailable")
 
 
 class Citation(BaseModel):
@@ -67,7 +66,6 @@ class ChatMetrics(BaseModel):
     jev_pruned: Optional[int] = 0
     jev_total_score: Optional[float] = None
     redundancy_rate: Optional[float] = 0.0
-    synthesis_mode: Optional[str] = "openai"
 
 
 class ChatResponse(BaseModel):

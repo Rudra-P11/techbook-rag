@@ -64,7 +64,6 @@ export default function App() {
   const [rrfK, setRrfK] = useState(10);
   const [wLex, setWLex] = useState(1.5);
   const [jevEnabled, setJevEnabled] = useState(true);
-  const [forceLocalSynthesis, setForceLocalSynthesis] = useState(false);
   const [showCustomTuning, setShowCustomTuning] = useState(false);
 
   // Voice speech-to-text recognition state
@@ -239,7 +238,6 @@ export default function App() {
     const activeK = overrideOptions.rrf_k ?? rrfK;
     const activeWLex = overrideOptions.w_lex ?? wLex;
     const activeJev = overrideOptions.jev_enabled ?? jevEnabled;
-    const activeLocal = overrideOptions.force_local_synthesis ?? forceLocalSynthesis;
 
     const userMsg = { 
       role: 'user', 
@@ -270,8 +268,7 @@ export default function App() {
           retrieval_mode: activeMode,
           rrf_k: activeK,
           w_lex: activeWLex,
-          jev_enabled: activeJev,
-          force_local_synthesis: activeLocal
+          jev_enabled: activeJev
         })
       });
 
@@ -664,15 +661,6 @@ export default function App() {
               <ShieldCheck size={13} />
               <span>JEV: {jevEnabled ? 'Active (0% Redundancy)' : 'Bypassed'}</span>
             </button>
-
-            <button
-              className={`toggle-chip ${forceLocalSynthesis ? 'active-green' : ''}`}
-              onClick={() => setForceLocalSynthesis(!forceLocalSynthesis)}
-              title="Switch to local deterministic neural extractor (Zero API Cost, runs offline on CPU)"
-            >
-              <Cpu size={13} />
-              <span>LLM: {forceLocalSynthesis ? 'Local Extractor ($0)' : 'OpenAI'}</span>
-            </button>
           </div>
 
           {showCustomTuning && (
@@ -816,7 +804,7 @@ export default function App() {
                   </div>
                 )}
 
-                <div className="message-text">
+                <div className={`message-text ${(msg.content?.includes('upstream provider error') || msg.content?.includes('API key has expired') || msg.content?.includes('401')) ? 'provider-error-alert' : ''}`}>
                   <MarkdownBody content={msg.content} />
                 </div>
 
