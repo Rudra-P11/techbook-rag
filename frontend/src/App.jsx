@@ -354,10 +354,13 @@ export default function App() {
   };
 
   const allSubjects = Array.from(new Set(documents.map((d) => d.subject).filter(Boolean)));
-  const filteredDocuments = documents.filter((d) => 
-    d.display_name.toLowerCase().includes(bookSearch.toLowerCase()) ||
-    (d.subject && d.subject.toLowerCase().includes(bookSearch.toLowerCase()))
-  );
+  const filteredDocuments = documents.filter((d) => {
+    const matchesSubject = selectedSubjects.length === 0 || selectedSubjects.includes(d.subject);
+    const matchesSearch = !bookSearch.trim() || 
+      d.display_name.toLowerCase().includes(bookSearch.toLowerCase()) ||
+      (d.subject && d.subject.toLowerCase().includes(bookSearch.toLowerCase()));
+    return matchesSubject && matchesSearch;
+  });
 
   return (
     <div className="app-container">
@@ -459,7 +462,7 @@ export default function App() {
           <div>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
               <div className="section-title" style={{ margin: 0 }}>
-                Corpus Books ({documents.length})
+                Corpus Books ({filteredDocuments.length}{selectedSubjects.length > 0 || bookSearch ? ` of ${documents.length}` : ''})
               </div>
               <label className="btn-secondary" style={{ padding: '4px 8px', fontSize: '0.72rem', cursor: 'pointer' }}>
                 <Upload size={12} />
@@ -498,7 +501,18 @@ export default function App() {
                       </button>
                     </div>
                     <div className="doc-meta">
-                      <span className="doc-tag">{doc.subject}</span>
+                      <span 
+                        className="doc-tag" 
+                        style={{ cursor: 'pointer' }}
+                        title="Click to toggle filter by this domain"
+                        onClick={() => {
+                          setSelectedSubjects((prev) =>
+                            prev.includes(doc.subject) ? prev.filter((s) => s !== doc.subject) : [...prev, doc.subject]
+                          );
+                        }}
+                      >
+                        {doc.subject}
+                      </span>
                       <span>{doc.page_count}p</span>
                       <span>•</span>
                       <span>{doc.chunk_count} chunks</span>
