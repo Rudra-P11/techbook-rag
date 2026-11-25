@@ -9,7 +9,7 @@
 
 **Intelligent Technical Knowledge Assistant** — Adaptive RAG + JEV System-1 Decision Engine over 11 technical books (2,810 chunks) using hybrid Dense + BM25 search, Reciprocal Rank Fusion, and Joint Evidential Valuation.
 
-🔗 **Quick Links:** [Live Architecture Showcase](https://rudra-p11.github.io/techbook-rag/) · [RRF k=60 Forensic Case Study](https://rudra-p11.github.io/techbook-rag/case_study_rrf_retrieval.html) · [19-Query Multi-Round Benchmark](https://rudra-p11.github.io/techbook-rag/empirical_evaluation_study.html) · [📖 Interview & Metrics Playbook](interview_metrics_playbook.md)
+🔗 **Quick Links:** [Live Architecture Showcase](https://rudra-p11.github.io/techbook-rag/) · [RRF k=60 Forensic Case Study](https://rudra-p11.github.io/techbook-rag/case_study_rrf_retrieval.html) · [19-Query Multi-Round Benchmark](https://rudra-p11.github.io/techbook-rag/empirical_evaluation_study.html) · [📖 Interview & Metrics Playbook](https://rudra-p11.github.io/techbook-rag/interview_metrics_playbook.html) ([.md](interview_metrics_playbook.md))
 
 ---
 
@@ -29,7 +29,7 @@ Every answer is grounded in real textbook passages with **verifiable page-level 
 > - [**Live Architecture Blueprint & Pipeline Simulator**](https://rudra-p11.github.io/techbook-rag/) — Interactive neural tokenizer, draggable 2D vector nebula, RRF physics sandbox, and 8-stage pipeline simulator
 > - [**Empirical Case Study: RRF k=60 Retrieval Analysis**](https://rudra-p11.github.io/techbook-rag/case_study_rrf_retrieval.html) — Forensic analysis of hybrid retrieval for *"What is a forward pass in a neural network?"*
 > - [**19-Query Multi-Round Benchmark & Hyperparameter Sweep**](https://rudra-p11.github.io/techbook-rag/empirical_evaluation_study.html) — 4-round architecture ablation study across 8 technical domains
-> - [**Production Defense & Interview Metrics Playbook**](interview_metrics_playbook.md) — Ready-to-copy resume bullet points (STAR format), 30s pitch, hyperparameter mathematical defense, and technical interview Q&A
+> - [**Production Defense & Interview Metrics Playbook**](https://rudra-p11.github.io/techbook-rag/interview_metrics_playbook.html) ([.md](interview_metrics_playbook.md)) — Ready-to-copy resume bullet points (STAR format), 30s pitch, hyperparameter mathematical defense, and technical interview Q&A
 
 <br>
 

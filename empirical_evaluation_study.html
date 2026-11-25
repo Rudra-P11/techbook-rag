@@ -7,6 +7,30 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <!-- KaTeX for Mathematical Expressions & Symbols Rendering -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      function renderMath() {
+        if (typeof renderMathInElement === 'function') {
+          renderMathInElement(document.body, {
+            delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$', right: '$', display: false},
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+            ],
+            throwOnError: false
+          });
+        } else {
+          setTimeout(renderMath, 80);
+        }
+      }
+      renderMath();
+    });
+  </script>
   <style>
     :root {
       --bg-canvas: #faf9f5;
@@ -409,7 +433,7 @@
       <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
         <a href="case_study_rrf_retrieval.html">&larr; Forensic Case Study</a>
         <a href="index.html">Live Architecture Showcase</a>
-        <a href="interview_metrics_playbook.md" style="color: var(--accent-olive); font-weight: 600;">📖 Interview Defense Playbook</a>
+        <a href="interview_metrics_playbook.html" style="color: var(--accent-olive); font-weight: 600;">📖 Interview Defense Playbook</a>
       </div>
       <span style="font-family: var(--font-mono); color: var(--text-soft);">TechBook RAG &bull; Benchmark v2.0</span>
     </div>
@@ -544,7 +568,7 @@
     <section>
       <h2>2. Hyperparameter Optimization: The RRF Ablation Sweep</h2>
       <p>
-        The default Reciprocal Rank Fusion formula uses a smoothing constant <code>k = 60</code>. But is <code>k = 60</code> optimal for technical textbook retrieval? We conducted an 11-configuration grid search over <code>k &isin; {10, 20, 30, 40, 60, 100}</code> and weighted rank ratios:
+        The default Reciprocal Rank Fusion formula uses a smoothing constant $k = 60$. But is $k = 60$ optimal for technical textbook retrieval? We conducted an 11-configuration grid search over $k \in \{10, 20, 30, 40, 60, 100\}$ and weighted rank ratios:
       </p>
       
       <div class="table-wrapper">
@@ -722,9 +746,9 @@
       <div class="callout green">
         <strong>The Key Optimization Finding:</strong>
         <br><br>
-        1. <strong>Tuning <code>k = 10</code> or Weighted RRF (<code>k = 20, w_lex = 1.5</code>):</strong> Boosted Term Recall from <strong>88.6%</strong> up to <strong>90.8%</strong> and Perfect Recall from <strong>61.1%</strong> to <strong>66.7%</strong>!
+        1. <strong>Tuning $k = 10$ or Weighted RRF ($k = 20, w_{\text{lex}} = 1.5$):</strong> Boosted Term Recall from <strong>88.6%</strong> up to <strong>90.8%</strong> and Perfect Recall from <strong>61.1%</strong> to <strong>66.7%</strong>!
         <br><br>
-        2. <strong>Mathematical Rationale:</strong> Lower <code>k = 10</code> creates a steeper hyperbolic decay gradient (<code>1/11 &approx; 0.0909</code> vs <code>1/61 &approx; 0.0164</code>). This grants higher weight to rank #1–#3 exact keyword rescues from BM25, allowing them to overcome moderate dense rank drift without losing dense conceptual coverage.
+        2. <strong>Mathematical Rationale:</strong> Lower $k = 10$ creates a steeper hyperbolic decay gradient ($\frac{1}{11} \approx 0.0909$ vs $\frac{1}{61} \approx 0.0164$). This grants higher weight to rank #1–#3 exact keyword rescues from BM25, allowing them to overcome moderate dense rank drift without losing dense conceptual coverage.
       </div>
     </section>
 
@@ -1140,7 +1164,7 @@
       <div style="display: flex; gap: 14px; flex-wrap: wrap;">
         <a href="case_study_rrf_retrieval.html" style="color: var(--accent-clay); text-decoration: none;">RRF Case Study</a> &bull;
         <a href="index.html" style="color: var(--accent-clay); text-decoration: none;">Architecture Showcase</a> &bull;
-        <a href="interview_metrics_playbook.md" style="color: var(--accent-olive); text-decoration: none; font-weight: 600;">Interview Playbook ↗</a>
+        <a href="interview_metrics_playbook.html" style="color: var(--accent-olive); text-decoration: none; font-weight: 600;">Interview Playbook ↗</a>
       </div>
     </footer>
 

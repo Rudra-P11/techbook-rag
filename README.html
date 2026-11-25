@@ -7,6 +7,30 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <!-- KaTeX for Mathematical Expressions & Symbols Rendering -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      function renderMath() {
+        if (typeof renderMathInElement === 'function') {
+          renderMathInElement(document.body, {
+            delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$', right: '$', display: false},
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+            ],
+            throwOnError: false
+          });
+        } else {
+          setTimeout(renderMath, 80);
+        }
+      }
+      renderMath();
+    });
+  </script>
   <style>
     :root {
       --bg-canvas: #faf9f5;
@@ -454,7 +478,7 @@
         <a href="#quickstart">Quick Start</a>
         <a href="#testing">Testing</a>
         <a href="empirical_evaluation_study.html">Empirical Benchmark</a>
-        <a href="interview_metrics_playbook.md" style="color: var(--accent-olive); font-weight: 600;">Interview Playbook ↗</a>
+        <a href="interview_metrics_playbook.html" style="color: var(--accent-olive); font-weight: 600;">Interview Playbook ↗</a>
         <a href="https://github.com/Rudra-P11/techbook-rag" target="_blank">GitHub ↗</a>
       </div>
     </nav>
@@ -488,7 +512,7 @@
         <a href="index.html" class="btn-showcase primary">▶ Live Simulator</a>
         <a href="case_study_rrf_retrieval.html" class="btn-showcase secondary">📄 RRF Case Study</a>
         <a href="empirical_evaluation_study.html" class="btn-showcase secondary">📊 19-Query Study</a>
-        <a href="interview_metrics_playbook.md" class="btn-showcase secondary" style="border-color: var(--accent-olive); color: var(--accent-olive);">📖 Interview Playbook</a>
+        <a href="interview_metrics_playbook.html" class="btn-showcase secondary" style="border-color: var(--accent-olive); color: var(--accent-olive);">📖 Interview Playbook</a>
       </div>
     </div>
 
@@ -755,7 +779,7 @@ cd frontend && npm run dev</div>
         <a href="index.html">Interactive Showcase</a> · 
         <a href="case_study_rrf_retrieval.html">RRF Case Study</a> · 
         <a href="empirical_evaluation_study.html">19-Query Benchmark</a> · 
-        <a href="interview_metrics_playbook.md" style="color: var(--accent-olive); font-weight: 600;">Interview Playbook ↗</a> · 
+        <a href="interview_metrics_playbook.html" style="color: var(--accent-olive); font-weight: 600;">Interview Playbook ↗</a> · 
         <a href="https://github.com/Rudra-P11/techbook-rag" target="_blank">GitHub Repository</a>
       </div>
     </footer>

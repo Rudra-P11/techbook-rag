@@ -7,6 +7,30 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <!-- KaTeX for Mathematical Expressions & Symbols Rendering -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      function renderMath() {
+        if (typeof renderMathInElement === 'function') {
+          renderMathInElement(document.body, {
+            delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$', right: '$', display: false},
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+            ],
+            throwOnError: false
+          });
+        } else {
+          setTimeout(renderMath, 80);
+        }
+      }
+      renderMath();
+    });
+  </script>
   <style>
     :root {
       --bg-canvas: #faf9f5;
@@ -566,7 +590,7 @@
         <a href="empirical_evaluation_study.html" style="background: var(--accent-clay); color: #ffffff; padding: 6px 14px; border-radius: 4px; font-size: 0.80rem; font-weight: 600; text-decoration: none; font-family: var(--font-mono);">
           19-Query Benchmark &rarr;
         </a>
-        <a href="interview_metrics_playbook.md" style="background: var(--bg-surface); color: var(--accent-olive); border: 1px solid var(--accent-olive); padding: 6px 14px; border-radius: 4px; font-size: 0.80rem; font-weight: 600; text-decoration: none; font-family: var(--font-mono);">
+        <a href="interview_metrics_playbook.html" style="background: var(--bg-surface); color: var(--accent-olive); border: 1px solid var(--accent-olive); padding: 6px 14px; border-radius: 4px; font-size: 0.80rem; font-weight: 600; text-decoration: none; font-family: var(--font-mono);">
           📖 Interview Playbook &rarr;
         </a>
       </div>
@@ -617,9 +641,9 @@
 
     <!-- Mathematical Foundation -->
     <section>
-      <h2>2. Mathematical Mechanics: Reciprocal Rank Fusion (k = 60)</h2>
+      <h2>2. Mathematical Mechanics: Reciprocal Rank Fusion ($k = 60$)</h2>
       <p>
-        Standard dense vector search generates unbounded cosine similarity scores in range [0, 1], while BM25 Okapi generates unbounded frequency scores in range [0, ∞). Naively combining these with raw weights requires delicate calibration that breaks across diverse queries.
+        Standard dense vector search generates cosine similarity scores bounded in $[0, 1]$, while BM25 Okapi generates unbounded frequency scores in $[0, \infty)$. Naively combining these with raw weights requires delicate calibration that breaks across diverse queries.
       </p>
       <p>
         <strong>Reciprocal Rank Fusion (RRF)</strong> resolves this problem by discarding raw score magnitudes and operating purely over ordinal rankings:
@@ -627,15 +651,15 @@
 
       <div class="formula-box">
         <div class="formula-display">
-          RRF Score(d) = ∑ [ 1 / (k + Rank_m(d)) ]
+          $$\text{RRF Score}(d) = \sum_{m \in M} \frac{1}{k + \text{Rank}_m(d)}$$
         </div>
         <div class="formula-caption">
-          Where k = 60 (standard Cormack et al. constant) and m ∈ { Dense ANN, BM25 Lexical }
+          Where $k = 60$ (standard Cormack et al. constant) and $m \in \{ \text{Dense ANN}, \text{BM25 Lexical} \}$
         </div>
       </div>
 
       <p>
-        With k = 60, the highest possible contribution from a single retrieval engine is 1 / (60 + 1) = 0.016393. When a candidate performs well in <em>both</em> stages, its reciprocal sum compounds, prioritizing it over candidates that only ranked high in a single model.
+        With $k = 60$, the highest possible contribution from a single retrieval engine is $\frac{1}{60 + 1} \approx 0.016393$. When a candidate performs well in <em>both</em> stages, its reciprocal sum compounds, prioritizing it over candidates that only ranked high in a single model.
       </p>
     </section>
 
@@ -1025,7 +1049,7 @@ for layer in reversed(self.layers):
         <div class="analysis-text">
           By tuning the smoothing constant <code>k</code> from the default <code>k = 60</code> down to <code>k = 10</code> or using weighted RRF with <code>w_lex = 1.5</code>, we resolved the rank decay plateau:
           <br><br>
-          &bull; <strong>Steeper Decay Gradient:</strong> At <code>k = 10</code>, rank #1 grants a score of <code>1/11 &approx; 0.0909</code>, compared to <code>1/61 &approx; 0.0164</code> at <code>k = 60</code>. This prevents low-scoring dense chunks (ranks 10–20) from diluting high-precision lexical matches.
+          &bull; <strong>Steeper Decay Gradient:</strong> At $k = 10$, rank #1 grants a score of $\frac{1}{11} \approx 0.0909$, compared to $\frac{1}{61} \approx 0.0164$ at $k = 60$. This prevents low-scoring dense chunks (ranks 10–20) from diluting high-precision lexical matches.
           <br>
           &bull; <strong>Preserving Semantic Continuity:</strong> Unlike BM25-only search, hybrid search preserves conceptual retrieval for syntax-free queries (e.g., Boost.Asio async I/O patterns where Dense scored 100% and BM25 achieved only 67%).
         </div>
@@ -1036,7 +1060,7 @@ for layer in reversed(self.layers):
         <a href="empirical_evaluation_study.html" style="display: inline-flex; align-items: center; gap: 8px; background: var(--text-main); color: #ffffff; padding: 12px 24px; border-radius: 6px; font-weight: 600; text-decoration: none; font-size: 0.95rem;">
           Open Complete Interactive 19-Query Benchmark Report &rarr;
         </a>
-        <a href="interview_metrics_playbook.md" style="display: inline-flex; align-items: center; gap: 8px; background: var(--bg-surface); color: var(--accent-olive); border: 1px solid var(--accent-olive); padding: 12px 24px; border-radius: 6px; font-weight: 600; text-decoration: none; font-size: 0.95rem;">
+        <a href="interview_metrics_playbook.html" style="display: inline-flex; align-items: center; gap: 8px; background: var(--bg-surface); color: var(--accent-olive); border: 1px solid var(--accent-olive); padding: 12px 24px; border-radius: 6px; font-weight: 600; text-decoration: none; font-size: 0.95rem;">
           📖 Interview Defense &amp; Metrics Playbook &rarr;
         </a>
       </div>
@@ -1048,7 +1072,7 @@ for layer in reversed(self.layers):
       <div style="display: flex; gap: 12px; flex-wrap: wrap;">
         <a href="index.html" style="color: var(--accent-clay); text-decoration: none;">Live Showcase</a> &bull;
         <a href="empirical_evaluation_study.html" style="color: var(--accent-clay); text-decoration: none;">19-Query Benchmark</a> &bull;
-        <a href="interview_metrics_playbook.md" style="color: var(--accent-olive); text-decoration: none; font-weight: 600;">Interview Playbook ↗</a>
+        <a href="interview_metrics_playbook.html" style="color: var(--accent-olive); text-decoration: none; font-weight: 600;">Interview Playbook ↗</a>
       </div>
     </footer>
 

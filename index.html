@@ -7,6 +7,30 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- KaTeX for Mathematical Expressions & Symbols Rendering -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      function renderMath() {
+        if (typeof renderMathInElement === 'function') {
+          renderMathInElement(document.body, {
+            delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$', right: '$', display: false},
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+            ],
+            throwOnError: false
+          });
+        } else {
+          setTimeout(renderMath, 80);
+        }
+      }
+      renderMath();
+    });
+  </script>
   <style>
     :root {
       --bg-canvas: #faf9f5;
@@ -1025,7 +1049,7 @@
         <a href="#simulation">Simulator</a>
         <a href="case_study_rrf_retrieval.html">Case Study</a>
         <a href="empirical_evaluation_study.html">Benchmark</a>
-        <a href="interview_metrics_playbook.md" style="color: var(--accent-olive); font-weight: 600;">Playbook ↗</a>
+        <a href="interview_metrics_playbook.html" style="color: var(--accent-olive); font-weight: 600;">Playbook ↗</a>
         <button class="sound-toggle-btn" id="soundToggleBtn" onclick="toggleAudio()" title="Toggle tactile acoustic feedback">
           <span>🔊</span> <span id="soundLabel">Audio: On</span>
         </button>
@@ -1184,10 +1208,10 @@
         <div class="decision-badge">Decision 3 • Hybrid Search & RRF Fusion</div>
         <div class="qa-question">Why Reciprocal Rank Fusion (k=60) instead of Weighted Sum?</div>
         <p>
-          Dense embeddings produce cosine similarity scores bounded in $[0, 1]$, whereas BM25 Okapi produces unbounded frequency scores in $[0, \infty)$. Linear weighted sum ($\alpha \cdot \text{Dense} + (1-\alpha) \cdot \text{BM25}$) fails because score scales shift wildly between short and long queries.
+          Dense embeddings produce cosine similarity scores bounded in $[0, 1]$, whereas BM25 Okapi produces unbounded frequency scores in $[0, \infty)$. Linear weighted sum $(\alpha \cdot \text{Dense} + (1-\alpha) \cdot \text{BM25})$ fails because score scales shift wildly between short and long queries.
         </p>
         <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0;">
-          <strong>RRF eliminates score normalization vulnerabilities:</strong> It operates strictly over ordinal positions: $\text{RRF}(d) = \sum \frac{1}{60 + \text{Rank}_m(d)}$. As demonstrated below in our interactive sandbox, this allows BM25 to rescue exact terminology matches (like Chunk #4, promoted +16 ranks into the context window) while preventing single-keyword spam from overwhelming semantic relevance.
+          <strong>RRF eliminates score normalization vulnerabilities:</strong> It operates strictly over ordinal positions: $\text{RRF}(d) = \sum_{m \in M} \frac{1}{60 + \text{Rank}_m(d)}$. As demonstrated below in our interactive sandbox, this allows BM25 to rescue exact terminology matches (like Chunk #4, promoted +16 ranks into the context window) while preventing single-keyword spam from overwhelming semantic relevance.
         </p>
       </div>
     </section>
@@ -1586,7 +1610,7 @@ return X
       <div style="display: flex; gap: 14px; flex-wrap: wrap;">
         <a href="case_study_rrf_retrieval.html">RRF Case Study</a> &bull;
         <a href="empirical_evaluation_study.html">19-Query Benchmark</a> &bull;
-        <a href="interview_metrics_playbook.md" style="color: var(--accent-olive); font-weight: 600;">Interview Playbook ↗</a>
+        <a href="interview_metrics_playbook.html" style="color: var(--accent-olive); font-weight: 600;">Interview Playbook ↗</a>
       </div>
     </footer>
 

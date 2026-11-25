@@ -98,7 +98,7 @@ $$\text{Score}_{\text{RRF}}(d) = \sum_{m} \frac{1}{k + \text{Rank}_m(d)}$$
 
 ### Q1: Why not just use OpenAI's embedding API (`text-embedding-3-small`)?
 > *"Three reasons: **Cost, Latency SLA, and Data Privacy**.*  
-> 1. *Cost: Running `BAAI/bge-small-en-v1.5` locally on CPU costs exactly **$0.00 per query**.*  
+> 1. *Cost: Running `BAAI/bge-small-en-v1.5` locally on CPU costs exactly **\$0.00 per query**.*  
 > 2. *Latency: Local inference runs in **15–25ms on CPU** with zero external network hops or rate-limit queuing.*  
 > 3. *Precision: BGE-small outputs 384-dimensional dense vectors that require only 1.5 KB per vector in Qdrant, allowing the entire 2,810-chunk index to sit in **<150 MB RAM** with sub-millisecond HNSW graph traversal."*
 
